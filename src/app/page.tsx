@@ -7,6 +7,7 @@ import { CorpusGrid } from '../components/home/CorpusGrid';
 import { getCuratedStashes } from '../lib/data';
 import { StashCard } from '../components/stashes/StashCard';
 import { useUserStore } from '../lib/storage/userStore';
+import { getAssetUrl } from '../lib/utils/basePath';
 import { Sparkles, ArrowRight, Bookmark, Compass } from 'lucide-react';
 
 export default function HomePage() {
@@ -29,7 +30,7 @@ export default function HomePage() {
         <div className="relative rounded-3xl bg-gradient-to-br from-stitch-parchment via-stitch-ivory to-stitch-parchment border-2 border-stitch-sand p-6 md:p-10 shadow-sm overflow-hidden text-center flex flex-col items-center">
           {/* Subtle gold emblem in background */}
           <div className="absolute top-0 right-0 -translate-y-4 translate-x-4 opacity-10 pointer-events-none">
-            <img src="/images/kuberan_logo_transparent.png" alt="" className="w-64 h-64" />
+            <img src={getAssetUrl('/images/kuberan_logo_transparent.png')} alt="" className="w-64 h-64" />
           </div>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stitch-maroon/10 border border-stitch-maroon/20 text-stitch-maroon text-xs font-semibold mb-3">
@@ -130,7 +131,7 @@ export default function HomePage() {
             className="inline-flex items-center gap-2 group"
           >
             <img
-              src="/images/kuberan_logo_transparent.png"
+              src={getAssetUrl('/images/kuberan_logo_transparent.png')}
               alt="Kuberan Logo"
               className="w-8 h-8 object-contain"
             />

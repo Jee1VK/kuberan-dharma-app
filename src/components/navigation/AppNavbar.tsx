@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Compass, Sparkles, Bookmark, BookOpen, ExternalLink } from 'lucide-react';
 import { useUserStore } from '../../lib/storage/userStore';
+import { getAssetUrl } from '../../lib/utils/basePath';
 
 export const AppNavbar: React.FC = () => {
   const pathname = usePathname();
@@ -30,7 +31,7 @@ export const AppNavbar: React.FC = () => {
             className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5"
           >
             <img
-              src="/images/kuberan_logo_transparent.png"
+              src={getAssetUrl('/images/kuberan_logo_transparent.png')}
               alt="Kuberan Logo"
               className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:scale-105 transition-transform"
             />

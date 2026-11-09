@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Volume2, FastForward } from 'lucide-react';
 import { LanguageCode } from '../../lib/types/scripture';
+import { getAssetUrl } from '../../lib/utils/basePath';
 
 interface AudioPlayerProps {
   audioUrl?: string;
@@ -64,7 +65,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
 
     if (audioUrl && !useSpeechFallback) {
       if (!audioRef.current) {
-        audioRef.current = new Audio(audioUrl);
+        audioRef.current = new Audio(getAssetUrl(audioUrl));
         audioRef.current.onended = handleAudioEnded;
         audioRef.current.onerror = () => {
           // If static audio file fails, fallback gracefully to TTS

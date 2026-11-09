@@ -2,13 +2,13 @@
   "name": "Kuberan Dharma App",
   "short_name": "Kuberan Dharma",
   "description": "Learn Ramayana, Mahabharata, Bhagavad Gita, Vedas and Puranas in bite-sized Dharma Cards across 6 languages.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#FAFAF7",
   "theme_color": "#6B1D2F",
   "icons": [
     {
-      "src": "/images/kuberan_logo_transparent.png",
+      "src": "./images/kuberan_logo_transparent.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
