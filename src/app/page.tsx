@@ -10,10 +10,12 @@ import { useUserStore } from '../lib/storage/userStore';
 import { getAssetUrl } from '../lib/utils/basePath';
 import { Sparkles, ArrowRight, Bookmark, Compass, Smartphone } from 'lucide-react';
 import { DownloadAppButton } from '../components/pwa/DownloadAppButton';
+import { useIsStandalone } from '../lib/hooks/useIsStandalone';
 
 export default function HomePage() {
   const { preferences, setLanguage } = useUserStore();
   const curatedStashes = getCuratedStashes();
+  const isStandalone = useIsStandalone();
 
   const languages: Array<{ code: any; label: string }> = [
     { code: 'en', label: 'English' },
@@ -123,32 +125,34 @@ export default function HomePage() {
         {/* The 5 Sacred Corpuses Grid */}
         <CorpusGrid />
 
-        {/* Download Mobile App Showcase Banner */}
-        <section className="relative rounded-3xl bg-gradient-to-r from-stitch-parchment via-stitch-ivory to-stitch-parchment border-2 border-stitch-sand/80 p-6 md:p-8 overflow-hidden shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <img
-              src={getAssetUrl('/images/app-icon-192.png')}
-              alt="Kuberan Dharma App Icon"
-              className="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-md border border-stitch-gold/50 object-cover flex-shrink-0"
-            />
-            <div className="text-left">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stitch-gold/15 border border-stitch-gold/30 text-stitch-deepGold text-[11px] font-bold uppercase tracking-wider mb-1">
-                <Smartphone className="w-3 h-3 text-stitch-deepGold" />
-                <span>Downloadable App</span>
+        {/* Download Mobile App Showcase Banner (Hidden when running inside installed app) */}
+        {!isStandalone && (
+          <section className="relative rounded-3xl bg-gradient-to-r from-stitch-parchment via-stitch-ivory to-stitch-parchment border-2 border-stitch-sand/80 p-6 md:p-8 overflow-hidden shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <img
+                src={getAssetUrl('/images/app-icon-192.png')}
+                alt="Kuberan Dharma App Icon"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-md border border-stitch-gold/50 object-cover flex-shrink-0"
+              />
+              <div className="text-left">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stitch-gold/15 border border-stitch-gold/30 text-stitch-deepGold text-[11px] font-bold uppercase tracking-wider mb-1">
+                  <Smartphone className="w-3 h-3 text-stitch-deepGold" />
+                  <span>Downloadable App</span>
+                </div>
+                <h3 className="font-serif font-bold text-xl md:text-2xl text-stitch-maroon">
+                  Take Dharma Anywhere, 100% Offline
+                </h3>
+                <p className="text-xs md:text-sm text-stitch-stone max-w-lg mt-1">
+                  Install on Android, iPhone, iPad, or Desktop. Enjoy distraction-free scripture reading, daily shloka chants, and offline access anytime.
+                </p>
               </div>
-              <h3 className="font-serif font-bold text-xl md:text-2xl text-stitch-maroon">
-                Take Dharma Anywhere, 100% Offline
-              </h3>
-              <p className="text-xs md:text-sm text-stitch-stone max-w-lg mt-1">
-                Install on Android, iPhone, iPad, or Desktop. Enjoy distraction-free scripture reading, daily shloka chants, and offline access anytime.
-              </p>
             </div>
-          </div>
 
-          <div className="flex-shrink-0 w-full md:w-auto">
-            <DownloadAppButton variant="hero" className="w-full md:w-auto" />
-          </div>
-        </section>
+            <div className="flex-shrink-0 w-full md:w-auto">
+              <DownloadAppButton variant="hero" className="w-full md:w-auto" />
+            </div>
+          </section>
+        )}
       </main>
 
       {/* Footer */}

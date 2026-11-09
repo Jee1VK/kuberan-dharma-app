@@ -25,8 +25,11 @@ export const InstallAppModal: React.FC<{
 
     const isInStandaloneMode =
       window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as unknown as { standalone?: boolean }).standalone === true;
-    setIsStandalone(isInStandaloneMode);
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      (window.navigator as unknown as { standalone?: boolean }).standalone === true ||
+      document.referrer.includes('android-app://') ||
+      localStorage.getItem('kuberan_dharma_installed') === 'true';
+    setIsStandalone(Boolean(isInStandaloneMode));
 
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
@@ -37,7 +40,11 @@ export const InstallAppModal: React.FC<{
 
     const handleAppInstalled = () => {
       setInstallSuccess(true);
+      setIsStandalone(true);
       setDeferredPrompt(null);
+      try {
+        localStorage.setItem('kuberan_dharma_installed', 'true');
+      } catch {}
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
@@ -54,6 +61,10 @@ export const InstallAppModal: React.FC<{
       const choiceResult = await deferredPrompt.userChoice;
       if (choiceResult.outcome === 'accepted') {
         setInstallSuccess(true);
+        setIsStandalone(true);
+        try {
+          localStorage.setItem('kuberan_dharma_installed', 'true');
+        } catch {}
       }
       setDeferredPrompt(null);
     }

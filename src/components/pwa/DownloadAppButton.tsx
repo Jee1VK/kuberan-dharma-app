@@ -3,12 +3,19 @@
 import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 import { InstallAppModal } from './InstallAppModal';
+import { useIsStandalone } from '../../lib/hooks/useIsStandalone';
 
 export const DownloadAppButton: React.FC<{
   variant?: 'navbar' | 'hero' | 'footer';
   className?: string;
 }> = ({ variant = 'navbar', className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const isStandalone = useIsStandalone();
+
+  // If the user has already installed the app and is running in standalone mode, hide download buttons
+  if (isStandalone) {
+    return null;
+  }
 
   if (variant === 'hero') {
     return (
