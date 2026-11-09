@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600&family=Noto+Sans+Tamil:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --stitch-maroon: #6B1D2F;
+  --stitch-gold: #C5A059;
+  --stitch-deep-gold: #8F6E28;
+  --stitch-ivory: #FAFAF7;
+  --stitch-parchment: #F3EFE6;
+  --stitch-slate: #1C1917;
+  --stitch-stone: #57534E;
+  --stitch-sand: #E4DEC8;
+}
+
+body {
+  background-color: var(--stitch-ivory);
+  color: var(--stitch-slate);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbars with temple gold accent */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAFAF7;
+}
+::-webkit-scrollbar-thumb {
+  background: #C5A059;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8F6E28;
+}
