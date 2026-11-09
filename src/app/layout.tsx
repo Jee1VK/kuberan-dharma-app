@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AppNavbar } from "../components/navigation/AppNavbar";
+import { MobileBottomNav } from "../components/navigation/MobileBottomNav";
 import { ServiceWorkerRegister } from "../components/pwa/ServiceWorkerRegister";
 import { getAssetUrl } from "../lib/utils/basePath";
 
@@ -33,10 +34,11 @@ export default function RootLayout({
         <meta name="application-name" content="Kuberan Dharma" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className="min-h-screen bg-stitch-ivory text-stitch-slate antialiased flex flex-col selection:bg-stitch-maroon selection:text-stitch-ivory">
+      <body className="min-h-screen bg-stitch-ivory text-stitch-slate antialiased flex flex-col selection:bg-stitch-maroon selection:text-stitch-ivory pb-20 md:pb-0">
         <ServiceWorkerRegister />
         <AppNavbar />
         {children}
+        <MobileBottomNav />
       </body>
     </html>
   );

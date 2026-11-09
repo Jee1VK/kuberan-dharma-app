@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Volume2, FastForward } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, FastForward, Repeat } from 'lucide-react';
 import { LanguageCode } from '../../lib/types/scripture';
 import { getAssetUrl } from '../../lib/utils/basePath';
 
@@ -14,11 +14,14 @@ interface AudioPlayerProps {
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, language }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
-  const [loopCount, setLoopCount] = useState<number>(1);
-  const [loopsRemaining, setLoopsRemaining] = useState<number>(1);
+  const [loopTarget, setLoopTarget] = useState<number>(1);
+  const [currentChant, setCurrentChant] = useState<number>(1);
   const [useSpeechFallback, setUseSpeechFallback] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const loopOptions = [1, 3, 11, 108];
+  const speedOptions = [0.8, 1.0, 1.25];
 
   useEffect(() => {
     if (!audioUrl) {
@@ -26,12 +29,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
     } else {
       setUseSpeechFallback(false);
     }
-    // Stop any ongoing playback when shloka changes
     stopPlayback();
   }, [audioUrl, shlokaText]);
 
   const stopPlayback = () => {
     setIsPlaying(false);
+    setCurrentChant(1);
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -42,15 +45,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
   };
 
   const handleAudioEnded = () => {
-    if (loopsRemaining > 1) {
-      setLoopsRemaining(prev => prev - 1);
+    if (currentChant < loopTarget) {
+      setCurrentChant((prev) => prev + 1);
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
-        audioRef.current.play();
+        audioRef.current.play().catch(() => {});
       }
     } else {
       setIsPlaying(false);
-      setLoopsRemaining(loopCount);
+      setCurrentChant(1);
     }
   };
 
@@ -61,30 +64,33 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
     }
 
     setIsPlaying(true);
-    setLoopsRemaining(loopCount);
+    setCurrentChant(1);
 
     if (audioUrl && !useSpeechFallback) {
       if (!audioRef.current) {
         audioRef.current = new Audio(getAssetUrl(audioUrl));
         audioRef.current.onended = handleAudioEnded;
         audioRef.current.onerror = () => {
-          // If static audio file fails, fallback gracefully to TTS
           setUseSpeechFallback(true);
-          startSpeechSynthesis();
+          startSpeechSynthesis(1);
         };
       }
       audioRef.current.playbackRate = playbackSpeed;
       audioRef.current.play().catch(() => {
         setUseSpeechFallback(true);
-        startSpeechSynthesis();
+        startSpeechSynthesis(1);
       });
     } else {
-      startSpeechSynthesis();
+      startSpeechSynthesis(1);
     }
   };
 
-  const startSpeechSynthesis = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance !== 'undefined') {
+  const startSpeechSynthesis = (chantIteration: number) => {
+    if (
+      typeof window !== 'undefined' &&
+      'speechSynthesis' in window &&
+      typeof window.SpeechSynthesisUtterance !== 'undefined'
+    ) {
       window.speechSynthesis.cancel();
       const utterance = new window.SpeechSynthesisUtterance(shlokaText);
       utterance.rate = playbackSpeed * 0.85;
@@ -100,99 +106,128 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
       utterance.lang = langMap[language] || 'hi-IN';
 
       utterance.onend = () => {
-        if (loopsRemaining > 1) {
-          setLoopsRemaining(prev => prev - 1);
-          startSpeechSynthesis();
+        if (chantIteration < loopTarget) {
+          setCurrentChant(chantIteration + 1);
+          startSpeechSynthesis(chantIteration + 1);
         } else {
           setIsPlaying(false);
-          setLoopsRemaining(loopCount);
+          setCurrentChant(1);
         }
       };
 
-      utterance.onerror = () => setIsPlaying(false);
+      utterance.onerror = () => {
+        setIsPlaying(false);
+      };
+
       window.speechSynthesis.speak(utterance);
     } else {
       setIsPlaying(false);
     }
   };
 
-  const toggleSpeed = () => {
-    const speeds = [0.75, 1.0, 1.25];
-    const nextIdx = (speeds.indexOf(playbackSpeed) + 1) % speeds.length;
-    const nextSpeed = speeds[nextIdx];
-    setPlaybackSpeed(nextSpeed);
+  const cycleSpeed = () => {
+    const nextIdx = (speedOptions.indexOf(playbackSpeed) + 1) % speedOptions.length;
+    const newSpeed = speedOptions[nextIdx];
+    setPlaybackSpeed(newSpeed);
     if (audioRef.current) {
-      audioRef.current.playbackRate = nextSpeed;
+      audioRef.current.playbackRate = newSpeed;
     }
   };
 
-  const toggleLoop = () => {
-    const loops = [1, 3, 9, 21, 108];
-    const nextIdx = (loops.indexOf(loopCount) + 1) % loops.length;
-    const nextLoop = loops[nextIdx];
-    setLoopCount(nextLoop);
-    setLoopsRemaining(nextLoop);
-  };
-
   return (
-    <div className="flex items-center justify-between gap-3 bg-stitch-parchment px-4 py-2.5 rounded-xl border border-stitch-sand/80 shadow-sm">
-      {/* Play/Pause Button */}
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={togglePlay}
-          aria-label={isPlaying ? 'Pause recitation' : (useSpeechFallback ? 'Speak recitation' : 'Play recitation')}
-          className="w-10 h-10 rounded-full bg-stitch-maroon hover:bg-stitch-maroonHover text-stitch-ivory flex items-center justify-center transition-transform active:scale-95 shadow"
-        >
-          {isPlaying ? (
-            <Pause className="w-4 h-4 fill-current" />
-          ) : (
-            <Play className="w-4 h-4 fill-current ml-0.5" />
-          )}
-        </button>
-
-        <div className="flex flex-col">
-          <span className="text-xs font-semibold text-stitch-slate flex items-center gap-1">
-            <Volume2 className="w-3.5 h-3.5 text-stitch-deepGold" />
-            {useSpeechFallback ? 'Pronunciation Audio' : 'Shloka Chanting'}
-          </span>
-          <span className="text-[11px] text-stitch-stone">
+    <div className="flex flex-col gap-2 p-3 rounded-xl bg-stitch-ivory/80 border border-stitch-sand/80 shadow-sm">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        {/* Play / Pause Primary Button */}
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label={isPlaying ? 'Pause Shloka Chanting' : 'Listen to Sacred Shloka Chanting'}
+            className={`min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shadow-sm ${
+              isPlaying
+                ? 'bg-amber-600 text-white ring-2 ring-amber-400/40'
+                : 'bg-stitch-maroon text-stitch-ivory hover:bg-stitch-maroonHover border border-stitch-gold/40'
+            }`}
+          >
             {isPlaying ? (
-              <span className="text-stitch-maroon font-medium animate-pulse">
-                Chanting... {loopCount > 1 ? `(Round ${loopCount - loopsRemaining + 1}/${loopCount})` : ''}
-              </span>
+              <>
+                <Pause className="w-4 h-4 fill-current" />
+                <span>Pause</span>
+              </>
             ) : (
-              'Tap to listen'
+              <>
+                <Play className="w-4 h-4 fill-current text-stitch-gold" />
+                <span>Shloka Chanting</span>
+              </>
             )}
-          </span>
+          </button>
+
+          {/* Reset button if playing */}
+          {isPlaying && (
+            <button
+              type="button"
+              onClick={stopPlayback}
+              aria-label="Restart Chanting"
+              className="min-h-[44px] min-w-[44px] p-2 rounded-xl text-stitch-stone hover:text-stitch-slate hover:bg-stitch-parchment transition-all flex items-center justify-center cursor-pointer"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* Live Japa Chant Counter Pill */}
+          {isPlaying && loopTarget > 1 && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stitch-gold/20 border border-stitch-gold/50 text-stitch-maroon font-mono text-xs font-bold animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-stitch-maroon animate-ping" />
+              <span>
+                Chant {currentChant} of {loopTarget}
+              </span>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Speed and Loop Controls */}
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={toggleSpeed}
-          title="Toggle recitation speed"
-          className="px-2.5 py-1 text-xs font-medium rounded-lg bg-stitch-ivory text-stitch-slate border border-stitch-sand hover:border-stitch-gold transition-colors flex items-center gap-1"
-        >
-          <FastForward className="w-3 h-3 text-stitch-stone" />
-          <span>{playbackSpeed}x speed</span>
-        </button>
+        {/* Playback Controls: Speed & Sacred Repetition (Japa) */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Speed Pill */}
+          <button
+            type="button"
+            onClick={cycleSpeed}
+            title="Adjust chanting speed"
+            aria-label="Adjust speed"
+            className="min-h-[36px] px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-stitch-parchment border border-stitch-sand hover:border-stitch-gold text-stitch-slate transition-all cursor-pointer flex items-center gap-1"
+          >
+            <FastForward className="w-3 h-3 text-stitch-deepGold" />
+            <span>speed {playbackSpeed}x</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={toggleLoop}
-          title="Repeat count for memorization / Japa"
-          className={`px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors flex items-center gap-1 ${
-            loopCount > 1
-              ? 'bg-stitch-maroon text-stitch-ivory border-stitch-maroon'
-              : 'bg-stitch-ivory text-stitch-slate border-stitch-sand hover:border-stitch-gold'
-          }`}
-        >
-          <RotateCcw className="w-3 h-3" />
-          <span>{loopCount}x</span>
-        </button>
+          {/* Japa Loop Repetition Selector */}
+          <div
+            className="flex items-center gap-1 bg-stitch-parchment p-0.5 rounded-lg border border-stitch-sand"
+            title="Repeat count (Japa)"
+            aria-label="Repeat count"
+          >
+            <span className="text-[10px] uppercase font-bold text-stitch-stone px-1.5 hidden sm:inline flex items-center gap-1">
+              <Repeat className="w-3 h-3" />
+              <span>Repeat count:</span>
+            </span>
+            {loopOptions.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  setLoopTarget(opt);
+                  if (!isPlaying) setCurrentChant(1);
+                }}
+                className={`min-h-[32px] px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  loopTarget === opt
+                    ? 'bg-stitch-maroon text-stitch-ivory shadow-xs'
+                    : 'text-stitch-stone hover:text-stitch-slate'
+                }`}
+              >
+                {opt}x
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
