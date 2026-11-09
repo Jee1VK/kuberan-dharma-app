@@ -1,17 +1,56 @@
 {
-  "name": "Kuberan Dharma App",
+  "id": "/kuberan-dharma-app/",
+  "name": "Kuberan Dharma App — Sacred Scripture Micro-Wisdom",
   "short_name": "Kuberan Dharma",
-  "description": "Learn Ramayana, Mahabharata, Bhagavad Gita, Vedas and Puranas in bite-sized Dharma Cards across 6 languages.",
+  "description": "Learn Ramayana, Mahabharata, Bhagavad Gita, Vedas and Puranas in bite-sized Dharma Cards across 6 languages by Kuberan Silks Chickpet.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#FAFAF7",
   "theme_color": "#6B1D2F",
+  "categories": ["education", "books", "lifestyle"],
   "icons": [
     {
-      "src": "./images/kuberan_logo_transparent.png",
+      "src": "./images/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./images/app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./images/app-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Daily Dharma Feed",
+      "short_name": "Daily Feed",
+      "description": "Read today's sacred bite-sized wisdom card",
+      "url": "./feed/",
+      "icons": [{ "src": "./images/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Bhagavad Gita",
+      "short_name": "Read Gita",
+      "description": "Read all 18 Chapters of the Bhagavad Gita in 6 languages",
+      "url": "./read/bhagavad-gita/1/",
+      "icons": [{ "src": "./images/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Wisdom Stashes",
+      "short_name": "Stashes",
+      "description": "Explore curated collections and mental models",
+      "url": "./stashes/",
+      "icons": [{ "src": "./images/app-icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Compass, Sparkles, Bookmark, BookOpen, ExternalLink } from 'lucide-react';
 import { useUserStore } from '../../lib/storage/userStore';
 import { getAssetUrl } from '../../lib/utils/basePath';
+import { DownloadAppButton } from '../pwa/DownloadAppButton';
 
 export const AppNavbar: React.FC = () => {
   const pathname = usePathname();
@@ -28,7 +29,7 @@ export const AppNavbar: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             title="Visit Kuberan Silks (Opens in new tab)"
-            className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5"
+            className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5 min-w-[44px] min-h-[44px]"
           >
             <img
               src={getAssetUrl('/images/kuberan_logo_transparent.png')}
@@ -58,7 +59,7 @@ export const AppNavbar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                className={`min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
                   isActive
                     ? 'bg-stitch-maroon text-stitch-ivory shadow-sm'
                     : 'text-stitch-stone hover:text-stitch-slate hover:bg-stitch-parchment'
@@ -70,10 +71,15 @@ export const AppNavbar: React.FC = () => {
             );
           })}
 
+          {/* Download App Action */}
+          <div className="ml-1 sm:ml-2">
+            <DownloadAppButton variant="navbar" />
+          </div>
+
           {/* Daily Streak Indicator */}
           {streak.currentStreak > 0 && (
             <div
-              className="ml-2 px-2.5 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon"
+              className="ml-2 px-2.5 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[36px]"
               title={`${streak.currentStreak} day learning streak!`}
             >
               <Sparkles className="w-3.5 h-3.5 text-stitch-gold fill-stitch-gold" />
@@ -86,7 +92,7 @@ export const AppNavbar: React.FC = () => {
             href="https://kuberansilks.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden lg:flex items-center gap-1 ml-2 text-[11px] font-semibold text-stitch-deepGold hover:text-stitch-maroon transition-colors py-1 px-2 rounded-lg border border-stitch-sand/80 bg-stitch-parchment"
+            className="hidden lg:flex items-center gap-1 ml-2 text-[11px] font-semibold text-stitch-deepGold hover:text-stitch-maroon transition-colors py-1.5 px-2 rounded-lg border border-stitch-sand/80 bg-stitch-parchment min-h-[44px]"
           >
             <span>kuberansilks.com</span>
             <ExternalLink className="w-3 h-3" />
