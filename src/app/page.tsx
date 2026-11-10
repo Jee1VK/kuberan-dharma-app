@@ -31,21 +31,26 @@ export default function HomePage() {
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6 md:py-8 flex flex-col gap-10">
         {/* Hero Section */}
         <div className="relative rounded-3xl bg-gradient-to-br from-stitch-parchment via-stitch-ivory to-stitch-parchment border-2 border-stitch-sand p-6 md:p-10 shadow-sm overflow-hidden text-center flex flex-col items-center">
-          {/* Subtle gold emblem in background */}
-          <div className="absolute top-0 right-0 -translate-y-4 translate-x-4 opacity-10 pointer-events-none">
-            <img src={getAssetUrl('/images/kuberan_logo_transparent.png')} alt="" className="w-64 h-64" />
+          {/* Subtle Centered Kuberan Heritage Watermark */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
+            <img
+              src={getAssetUrl('/images/kuberan_watermark_full.png')}
+              alt=""
+              aria-hidden="true"
+              className="w-full max-w-[260px] sm:max-w-[340px] md:max-w-[420px] max-h-[70%] object-contain opacity-[0.05]"
+            />
           </div>
 
-          <h1 className="font-serif font-black text-3xl md:text-5xl text-stitch-maroon tracking-tight leading-tight max-w-3xl">
+          <h1 className="relative z-10 font-serif font-black text-3xl md:text-5xl text-stitch-maroon tracking-tight leading-tight max-w-3xl">
             Timeless Wisdom from Ramayana to the Gita, in Bite-Sized Cards
           </h1>
 
-          <p className="text-sm md:text-base text-stitch-stone max-w-2xl mt-3 leading-relaxed">
+          <p className="relative z-10 text-sm md:text-base text-stitch-stone max-w-2xl mt-3 leading-relaxed">
             Understand the deep spiritual essence, word meanings, and practical life applications of the sacred texts — curated across 6 languages for everyday clarity.
           </p>
 
           {/* Language Fast-Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 mt-5">
             <span className="text-xs text-stitch-stone font-semibold mr-1">Choose Language:</span>
             {languages.map((l) => (
               <button
@@ -64,7 +69,7 @@ export default function HomePage() {
           </div>
 
           {/* Hero CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 mt-6">
             <DownloadAppButton variant="hero" />
 
             <Link

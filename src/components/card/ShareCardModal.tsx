@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Copy, Check, Share2 } from 'lucide-react';
 import { DharmaCardUnit, LanguageCode } from '../../lib/types/scripture';
+import { getAssetUrl } from '../../lib/utils/basePath';
 
 interface ShareCardModalProps {
   card: DharmaCardUnit;
@@ -68,8 +69,13 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ card, language, 
         {/* Visual Preview Graphic Card */}
         <div className="my-4 p-5 rounded-xl bg-gradient-to-br from-stitch-parchment to-stitch-ivory border-2 border-stitch-gold/40 shadow-inner relative overflow-hidden">
           {/* Subtle gold watermark emblem */}
-          <div className="absolute top-2 right-2 opacity-15 pointer-events-none">
-            <img src="/images/kuberan_logo_transparent.png" alt="" className="w-20 h-20" />
+          <div className="absolute top-2 right-2 opacity-10 pointer-events-none select-none">
+            <img
+              src={getAssetUrl('/images/kuberan_watermark_emblem.png')}
+              alt=""
+              aria-hidden="true"
+              className="w-10 h-16 object-contain"
+            />
           </div>
 
           <div className="flex items-center justify-between mb-2">

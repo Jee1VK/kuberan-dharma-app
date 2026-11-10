@@ -14,6 +14,8 @@ const PRECACHE_ASSETS = [
   'stashes/',
   'manifest.json',
   'images/kuberan_logo_transparent.png',
+  'images/kuberan_watermark_full.png',
+  'images/kuberan_watermark_emblem.png',
   'images/app-icon-192.png',
   'images/app-icon-512.png',
   'images/app-icon-maskable-512.png',
