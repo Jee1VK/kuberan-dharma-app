@@ -84,10 +84,10 @@ export const FeedFilterBar: React.FC<FeedFilterBarProps> = ({
               key={cat.id}
               type="button"
               onClick={() => onFilterChange(cat.id)}
-              className={`px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap transition-all border ${
+              className={`min-h-[36px] px-3.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap transition-all border cursor-pointer active:scale-95 ${
                 isActive
                   ? 'bg-stitch-maroon text-stitch-ivory border-stitch-maroon shadow-sm'
-                  : 'bg-stitch-parchment text-stitch-stone border-stitch-sand hover:border-stitch-gold'
+                  : 'bg-stitch-parchment text-stitch-stone border-stitch-sand hover:border-stitch-gold hover:text-stitch-slate'
               }`}
             >
               {cat.label}

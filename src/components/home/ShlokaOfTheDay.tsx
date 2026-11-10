@@ -18,15 +18,22 @@ export const ShlokaOfTheDay: React.FC = () => {
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-stitch-gold fill-stitch-gold/40" />
-          <h2 className="font-serif font-bold text-lg md:text-xl text-stitch-slate">
-            Shloka of the Day
-          </h2>
+          <div className="w-6 h-6 rounded-full bg-stitch-gold/20 flex items-center justify-center">
+            <Sparkles className="w-3.5 h-3.5 text-stitch-deepGold fill-stitch-gold/50" />
+          </div>
+          <div>
+            <h2 className="font-serif font-bold text-lg md:text-xl text-stitch-slate leading-none">
+              Shloka of the Day
+            </h2>
+            <span className="text-[10px] text-stitch-deepGold font-semibold uppercase tracking-wider">
+              Daily Sacred Darshan
+            </span>
+          </div>
         </div>
 
         <Link
           href="/feed"
-          className="text-xs font-semibold text-stitch-maroon hover:underline flex items-center gap-1"
+          className="text-xs font-semibold text-stitch-maroon hover:underline flex items-center gap-1 min-h-[44px]"
         >
           <span>Explore All Cards</span>
           <ArrowRight className="w-3.5 h-3.5" />

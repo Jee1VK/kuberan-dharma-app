@@ -3,20 +3,29 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Sparkles, Bookmark, BookOpen, ExternalLink } from 'lucide-react';
+import { Compass, Sparkles, Bookmark, BookOpen, ExternalLink, Globe } from 'lucide-react';
 import { useUserStore } from '../../lib/storage/userStore';
 import { getAssetUrl } from '../../lib/utils/basePath';
 import { DownloadAppButton } from '../pwa/DownloadAppButton';
 
 export const AppNavbar: React.FC = () => {
   const pathname = usePathname();
-  const { streak } = useUserStore();
+  const { streak, preferences, setLanguage } = useUserStore();
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Compass },
     { href: '/feed', label: 'Daily Feed', icon: Sparkles },
     { href: '/stashes', label: 'Stashes', icon: Bookmark },
     { href: '/read/bhagavad-gita/1', label: 'Read Gita', icon: BookOpen },
+  ];
+
+  const languages = [
+    { code: 'en', label: 'EN' },
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'kn', label: 'ಕನ್ನಡ' },
+    { code: 'sa', label: 'संस्कृत' },
+    { code: 'ta', label: 'தமிழ்' },
+    { code: 'te', label: 'తెలుగు' },
   ];
 
   return (
@@ -75,19 +84,35 @@ export const AppNavbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Actions: Download App Button & Streak Indicator */}
-        <div className="flex items-center gap-2">
+        {/* Right Actions: Language, Streak, and Download */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Global Language Pill */}
+          <div className="relative flex items-center">
+            <Globe className="w-3.5 h-3.5 text-stitch-deepGold absolute left-2 pointer-events-none" />
+            <select
+              value={preferences.language}
+              onChange={(e) => setLanguage(e.target.value as any)}
+              aria-label="Select Scripture Language"
+              className="pl-6 pr-2 py-1 text-xs rounded-xl bg-stitch-parchment/90 border border-stitch-sand text-stitch-slate font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-stitch-maroon appearance-none shadow-sm min-h-[36px]"
+            >
+              {languages.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <DownloadAppButton variant="navbar" />
 
-          {streak.currentStreak > 0 && (
-            <div
-              className="px-2.5 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[36px]"
-              title={`${streak.currentStreak} day learning streak!`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-stitch-gold fill-stitch-gold" />
-              <span>{streak.currentStreak}d</span>
-            </div>
-          )}
+          {/* Daily Streak Counter with Diya/Flame */}
+          <div
+            className="px-2.5 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[36px]"
+            title={`${streak.currentStreak || 1} day learning streak!`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-stitch-gold fill-stitch-gold" />
+            <span>{streak.currentStreak || 1}d</span>
+          </div>
 
           {/* Direct Link to Kuberan Store on Desktop */}
           <a

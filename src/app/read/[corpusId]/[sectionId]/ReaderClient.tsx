@@ -80,8 +80,10 @@ export default function ReaderClient({ corpusId, sectionIdNum }: ReaderClientPro
         </div>
 
         {/* Chapter Header Banner */}
-        <div className="bg-stitch-parchment/70 rounded-2xl p-6 border border-stitch-sand flex flex-col gap-3">
-          <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="relative bg-gradient-to-br from-stitch-parchment/90 via-stitch-ivory to-stitch-parchment/80 rounded-2xl p-6 border-2 border-stitch-sand/80 shadow-sm flex flex-col gap-3 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-stitch-maroon via-stitch-gold to-stitch-maroon" />
+
+          <div className="flex items-center justify-between flex-wrap gap-2 pt-1">
             <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-stitch-maroon/10 text-stitch-maroon border border-stitch-maroon/20">
               {corpus?.title.en || 'Bhagavad Gita'}
             </span>
@@ -94,7 +96,7 @@ export default function ReaderClient({ corpusId, sectionIdNum }: ReaderClientPro
                   value={sectionIdNum}
                   onChange={handleChapterChange}
                   aria-label="Jump to Chapter"
-                  className="py-1 px-2 text-xs rounded-lg bg-stitch-ivory border border-stitch-sand font-serif font-bold text-stitch-maroon"
+                  className="py-1.5 px-3 text-xs rounded-xl bg-stitch-ivory border border-stitch-sand font-serif font-bold text-stitch-maroon shadow-sm focus:outline-none focus:ring-1 focus:ring-stitch-maroon cursor-pointer min-h-[36px]"
                 >
                   {corpus.sections.map((s) => (
                     <option key={s.sectionNumber} value={s.sectionNumber}>

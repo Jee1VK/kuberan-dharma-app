@@ -117,8 +117,15 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
       </h3>
 
       {/* Sacred Shloka Box */}
-      <div className="bg-stitch-parchment/70 rounded-2xl p-4 md:p-5 border border-stitch-sand flex flex-col gap-3">
-        <p className="font-serif text-lg md:text-xl font-semibold text-stitch-maroon whitespace-pre-line leading-[1.8] text-center">
+      <div className="relative bg-gradient-to-b from-stitch-parchment/80 via-stitch-ivory to-stitch-parchment/60 rounded-2xl p-4 md:p-6 border border-stitch-gold/40 shadow-inner flex flex-col gap-3">
+        {/* Subtle Vedic Diya ornament */}
+        <div className="flex items-center justify-center gap-2 pt-0.5 opacity-80 select-none">
+          <span className="h-px w-8 bg-stitch-gold/40" />
+          <span className="text-stitch-deepGold text-xs font-serif">ॐ</span>
+          <span className="h-px w-8 bg-stitch-gold/40" />
+        </div>
+
+        <p className="font-devanagari text-xl md:text-2xl font-bold text-stitch-maroon whitespace-pre-line leading-[2.1] text-center tracking-wide">
           {unit.sanskrit.devanagari}
         </p>
 
@@ -157,19 +164,19 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
 
       {/* The 3-Layer Insight Tabs */}
       <div className="flex flex-col gap-3 mt-1">
-        <div className="flex items-center gap-1 bg-stitch-parchment/60 p-1 rounded-xl border border-stitch-sand" role="tablist">
+        <div className="grid grid-cols-3 gap-1 bg-stitch-parchment/70 p-1 rounded-xl border border-stitch-sand/80 shadow-sm" role="tablist">
           <button
             type="button"
             role="tab"
             aria-selected={activeLayer === 'translation'}
             onClick={() => setActiveLayer('translation')}
-            className={`min-h-[44px] flex-1 py-2 px-2 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] py-2 px-1 rounded-lg text-[11px] sm:text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-center leading-tight ${
               activeLayer === 'translation'
                 ? 'bg-stitch-maroon text-stitch-ivory shadow-sm'
                 : 'text-stitch-stone hover:text-stitch-slate hover:bg-stitch-parchment'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5" />
+            <BookOpen className="w-3.5 h-3.5 flex-shrink-0" />
             <span>Translation</span>
           </button>
 
@@ -178,13 +185,13 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
             role="tab"
             aria-selected={activeLayer === 'essence'}
             onClick={() => setActiveLayer('essence')}
-            className={`min-h-[44px] flex-1 py-2 px-2 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] py-2 px-1 rounded-lg text-[11px] sm:text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-center leading-tight ${
               activeLayer === 'essence'
                 ? 'bg-stitch-maroon text-stitch-ivory shadow-sm'
                 : 'text-stitch-stone hover:text-stitch-slate hover:bg-stitch-parchment'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5 flex-shrink-0 text-stitch-gold" />
             <span>Philosophical Essence</span>
           </button>
 
@@ -193,13 +200,13 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
             role="tab"
             aria-selected={activeLayer === 'application'}
             onClick={() => setActiveLayer('application')}
-            className={`min-h-[44px] flex-1 py-2 px-2 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] py-2 px-1 rounded-lg text-[11px] sm:text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-center leading-tight ${
               activeLayer === 'application'
                 ? 'bg-stitch-maroon text-stitch-ivory shadow-sm'
                 : 'text-stitch-stone hover:text-stitch-slate hover:bg-stitch-parchment'
             }`}
           >
-            <Lightbulb className="w-3.5 h-3.5" />
+            <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 text-amber-500" />
             <span>Modern Life Application</span>
           </button>
         </div>
