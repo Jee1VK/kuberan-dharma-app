@@ -21,7 +21,7 @@ export default function StashesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stitch-sand">
           <div>
             <span className="text-xs font-serif font-bold tracking-widest text-stitch-deepGold uppercase">
-              Deepstash Collections
+              Wisdom Collections
             </span>
             <h1 className="font-serif font-bold text-3xl md:text-4xl text-stitch-maroon mt-1">
               Curated & Personal Stashes

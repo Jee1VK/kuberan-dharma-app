@@ -5,7 +5,7 @@
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.1.7-black)](https://nextjs.org/)
 [![Design Standard](https://img.shields.io/badge/Google%20Stitch-DESIGN.md-6B1D2F)](DESIGN.md)
 
-> **Bite-Sized Sacred Scripture Micro-Learning (Deepstash Edition)**  
+> **Bite-Sized Sacred Scripture Micro-Learning**  
 > Developed for **Kuberan Silks Chickpet**, Bengaluru · [kuberansilks.com](https://kuberansilks.com/)  
 > 🌐 **Live Web App:** [https://jee1vk.github.io/kuberan-dharma-app/](https://jee1vk.github.io/kuberan-dharma-app/)
 
@@ -13,7 +13,7 @@
 
 ## 🌟 Overview
 
-The **Kuberan Dharma App** brings the timeless wisdom of India's sacred scriptures into everyday modern life through atomic, bite-sized **"Dharma Cards"** inspired by Deepstash's micro-learning framework.
+The **Kuberan Dharma App** brings the timeless wisdom of India's sacred scriptures into everyday modern life through atomic, bite-sized **"Dharma Cards"** designed for clarity and daily spiritual growth.
 
 Instead of dense, archaic volumes, readers experience concise cards featuring authentic Devanagari text, phonetic IAST transliteration, audio chanting, and our **3-Layer Understanding Model**.
 

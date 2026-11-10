@@ -111,7 +111,7 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
         </div>
       </div>
 
-      {/* Deepstash Insight Title */}
+      {/* Card Insight Title */}
       <h3 className="font-serif font-bold text-xl md:text-2xl text-stitch-slate leading-snug">
         {title}
       </h3>

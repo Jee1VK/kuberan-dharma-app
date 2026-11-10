@@ -20,7 +20,7 @@ export default function FeedPage() {
           Daily Wisdom Feed
         </h1>
         <p className="text-xs text-stitch-stone">
-          Deepstash-style bite-sized cards from Bhagavad Gita, Epics, Vedas & Puranas.
+          Bite-sized cards from Bhagavad Gita, Epics, Vedas & Puranas.
         </p>
       </div>
 
