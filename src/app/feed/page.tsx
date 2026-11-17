@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { getAllCards } from '../../lib/data';
 import { FeedFilterBar } from '../../components/feed/FeedFilterBar';
 import { CardStream } from '../../components/feed/CardStream';
+import { WakeLockToggle } from '../../components/common/WakeLockToggle';
 import { useUserStore } from '../../lib/storage/userStore';
 
 export default function FeedPage() {
@@ -14,14 +15,17 @@ export default function FeedPage() {
   const allCards = getAllCards();
 
   return (
-    <main className="min-h-screen bg-stitch-ivory px-4 pb-20">
-      <div className="max-w-2xl mx-auto pt-4 pb-2">
-        <h1 className="font-serif font-bold text-2xl md:text-3xl text-stitch-maroon tracking-wide">
-          Daily Wisdom Feed
-        </h1>
-        <p className="text-xs text-stitch-stone">
-          Bite-sized cards from Bhagavad Gita, Epics, Vedas & Puranas.
-        </p>
+    <main className="min-h-screen bg-stitch-ivory px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom,16px))] md:pb-12">
+      <div className="max-w-2xl mx-auto pt-4 pb-2 flex items-center justify-between gap-3">
+        <div>
+          <h1 className="font-serif font-bold text-2xl md:text-3xl text-stitch-maroon tracking-wide">
+            Daily Wisdom Feed
+          </h1>
+          <p className="text-xs text-stitch-stone">
+            Bite-sized cards from Bhagavad Gita, Epics, Vedas & Puranas.
+          </p>
+        </div>
+        <WakeLockToggle defaultEnabled={true} />
       </div>
 
       <FeedFilterBar

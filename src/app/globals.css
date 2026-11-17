@@ -33,6 +33,11 @@ html {
   outline-offset: 2px;
 }
 
+/* Mobile Safe Area Utilities */
+.pb-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
 /* Indic Script Font Classes */
 .font-devanagari {
   font-family: 'Noto Sans Devanagari', -apple-system, sans-serif;

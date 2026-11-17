@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Volume2, FastForward, Repeat } from 'lucide-react';
+import React, { useState, useEffect, useId } from 'react';
+import { Play, Pause, RotateCcw, FastForward, Repeat } from 'lucide-react';
 import { LanguageCode } from '../../lib/types/scripture';
-import { getAssetUrl } from '../../lib/utils/basePath';
+import { audioController } from '../../lib/audio/audioController';
 
 interface AudioPlayerProps {
   audioUrl?: string;
@@ -12,49 +12,34 @@ interface AudioPlayerProps {
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, language }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const playerId = useId();
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [loopTarget, setLoopTarget] = useState<number>(1);
-  const [currentChant, setCurrentChant] = useState<number>(1);
-  const [useSpeechFallback, setUseSpeechFallback] = useState(false);
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [controllerState, setControllerState] = useState(() => audioController.getState());
 
   const loopOptions = [1, 3, 11, 108];
   const speedOptions = [0.8, 1.0, 1.25];
 
+  const isPlaying = controllerState.isPlaying && controllerState.activePlayerId === playerId;
+  const currentChant = isPlaying ? controllerState.currentChant : 1;
+
   useEffect(() => {
-    if (!audioUrl) {
-      setUseSpeechFallback(true);
-    } else {
-      setUseSpeechFallback(false);
-    }
-    stopPlayback();
-  }, [audioUrl, shlokaText]);
+    const unsubscribe = audioController.subscribe((nextState) => {
+      setControllerState(nextState);
+    });
+    return () => {
+      unsubscribe();
+      audioController.stop(playerId);
+    };
+  }, [playerId]);
+
+  // Stop active playback if the underlying shloka changes
+  useEffect(() => {
+    audioController.stop(playerId);
+  }, [audioUrl, shlokaText, playerId]);
 
   const stopPlayback = () => {
-    setIsPlaying(false);
-    setCurrentChant(1);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-  };
-
-  const handleAudioEnded = () => {
-    if (currentChant < loopTarget) {
-      setCurrentChant((prev) => prev + 1);
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play().catch(() => {});
-      }
-    } else {
-      setIsPlaying(false);
-      setCurrentChant(1);
-    }
+    audioController.stop(playerId);
   };
 
   const togglePlay = () => {
@@ -63,74 +48,29 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
       return;
     }
 
-    setIsPlaying(true);
-    setCurrentChant(1);
-
-    if (audioUrl && !useSpeechFallback) {
-      if (!audioRef.current) {
-        audioRef.current = new Audio(getAssetUrl(audioUrl));
-        audioRef.current.onended = handleAudioEnded;
-        audioRef.current.onerror = () => {
-          setUseSpeechFallback(true);
-          startSpeechSynthesis(1);
-        };
-      }
-      audioRef.current.playbackRate = playbackSpeed;
-      audioRef.current.play().catch(() => {
-        setUseSpeechFallback(true);
-        startSpeechSynthesis(1);
-      });
-    } else {
-      startSpeechSynthesis(1);
-    }
-  };
-
-  const startSpeechSynthesis = (chantIteration: number) => {
-    if (
-      typeof window !== 'undefined' &&
-      'speechSynthesis' in window &&
-      typeof window.SpeechSynthesisUtterance !== 'undefined'
-    ) {
-      window.speechSynthesis.cancel();
-      const utterance = new window.SpeechSynthesisUtterance(shlokaText);
-      utterance.rate = playbackSpeed * 0.85;
-
-      const langMap: Record<LanguageCode, string> = {
-        sa: 'hi-IN',
-        hi: 'hi-IN',
-        kn: 'kn-IN',
-        ta: 'ta-IN',
-        te: 'te-IN',
-        en: 'en-IN',
-      };
-      utterance.lang = langMap[language] || 'hi-IN';
-
-      utterance.onend = () => {
-        if (chantIteration < loopTarget) {
-          setCurrentChant(chantIteration + 1);
-          startSpeechSynthesis(chantIteration + 1);
-        } else {
-          setIsPlaying(false);
-          setCurrentChant(1);
-        }
-      };
-
-      utterance.onerror = () => {
-        setIsPlaying(false);
-      };
-
-      window.speechSynthesis.speak(utterance);
-    } else {
-      setIsPlaying(false);
-    }
+    audioController.play({
+      playerId,
+      audioUrl,
+      shlokaText,
+      language,
+      loopTarget,
+      playbackSpeed,
+    });
   };
 
   const cycleSpeed = () => {
     const nextIdx = (speedOptions.indexOf(playbackSpeed) + 1) % speedOptions.length;
     const newSpeed = speedOptions[nextIdx];
     setPlaybackSpeed(newSpeed);
-    if (audioRef.current) {
-      audioRef.current.playbackRate = newSpeed;
+    if (isPlaying) {
+      audioController.setPlaybackSpeed(playerId, newSpeed);
+    }
+  };
+
+  const handleLoopSelect = (opt: number) => {
+    setLoopTarget(opt);
+    if (isPlaying) {
+      audioController.setLoopTarget(playerId, opt);
     }
   };
 
@@ -213,10 +153,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, shlokaText, 
               <button
                 key={opt}
                 type="button"
-                onClick={() => {
-                  setLoopTarget(opt);
-                  if (!isPlaying) setCurrentChant(1);
-                }}
+                onClick={() => handleLoopSelect(opt)}
                 className={`min-h-[32px] px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
                   loopTarget === opt
                     ? 'bg-stitch-maroon text-stitch-ivory shadow-xs'

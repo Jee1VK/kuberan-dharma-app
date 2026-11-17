@@ -14,6 +14,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover" as const,
 };
 
 export default function RootLayout({
@@ -34,7 +35,7 @@ export default function RootLayout({
         <meta name="application-name" content="Kuberan Dharma" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className="min-h-screen bg-stitch-ivory text-stitch-slate antialiased flex flex-col selection:bg-stitch-maroon selection:text-stitch-ivory pb-20 md:pb-0">
+      <body className="min-h-screen bg-stitch-ivory text-stitch-slate antialiased flex flex-col selection:bg-stitch-maroon selection:text-stitch-ivory pb-[calc(5rem+env(safe-area-inset-bottom,16px))] md:pb-0">
         <ServiceWorkerRegister />
         <AppNavbar />
         {children}

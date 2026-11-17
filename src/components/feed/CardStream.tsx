@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { DharmaCardUnit, LanguageCode } from '../../lib/types/scripture';
 import { DharmaCard } from '../card/DharmaCard';
 import { useUserStore } from '../../lib/storage/userStore';
-import { searchCards } from '../../lib/search/searchEngine';
+import { searchCards, normalizeSearchText } from '../../lib/search/searchEngine';
 import { Sparkles, Compass } from 'lucide-react';
 
 interface CardStreamProps {
@@ -36,9 +36,10 @@ export const CardStream: React.FC<CardStreamProps> = ({
       if (['bhagavad-gita', 'ramayana', 'mahabharata', 'vedas', 'puranas'].includes(activeFilter)) {
         result = result.filter(card => card.corpusId === activeFilter);
       } else {
-        // Match against thematic tags or categories
+        // Match against thematic tags or categories (diacritic-insensitive)
+        const normalizedFilter = normalizeSearchText(activeFilter);
         result = result.filter(card =>
-          card.thematicTags.some(t => t.toLowerCase().includes(activeFilter.toLowerCase()))
+          card.thematicTags.some(t => normalizeSearchText(t).includes(normalizedFilter))
         );
       }
     }

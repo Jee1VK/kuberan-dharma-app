@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getStashById, getCardUnit } from '../../../lib/data';
 import { useUserStore } from '../../../lib/storage/userStore';
 import { DharmaCard } from '../../../components/card/DharmaCard';
+import { WakeLockToggle } from '../../../components/common/WakeLockToggle';
 import { ArrowLeft, Bookmark } from 'lucide-react';
 
 export default function StashDetailClient({ stashId }: { stashId: string }) {
@@ -25,17 +26,18 @@ export default function StashDetailClient({ stashId }: { stashId: string }) {
   const cards = cardIds.map(id => getCardUnit(id)).filter((c): c is NonNullable<typeof c> => c !== undefined);
 
   return (
-    <main className="min-h-screen bg-stitch-ivory px-4 py-6 pb-24">
+    <main className="min-h-screen bg-stitch-ivory px-4 py-6 pb-[calc(5.5rem+env(safe-area-inset-bottom,16px))] md:pb-12">
       <div className="max-w-2xl mx-auto flex flex-col gap-6">
-        {/* Back Button */}
-        <div>
+        {/* Back Button & Wake Lock Toggle */}
+        <div className="flex items-center justify-between gap-2">
           <Link
             href="/stashes"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-stitch-stone hover:text-stitch-maroon transition-colors py-1 px-2.5 rounded-lg bg-stitch-parchment border border-stitch-sand"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-stitch-stone hover:text-stitch-maroon transition-colors py-1 px-2.5 rounded-lg bg-stitch-parchment border border-stitch-sand min-h-[36px]"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Stashes</span>
           </Link>
+          <WakeLockToggle defaultEnabled={true} />
         </div>
 
         {/* Stash Header */}

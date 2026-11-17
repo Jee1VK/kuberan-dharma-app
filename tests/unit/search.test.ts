@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { searchCards } from '@/lib/search/searchEngine';
+import { searchCards, normalizeSearchText } from '@/lib/search/searchEngine';
 
 describe('In-Memory Dharma Search', () => {
   it('finds cards by insight title and themes like "Effort", "Action", or "Anxiety"', () => {
@@ -10,6 +10,21 @@ describe('In-Memory Dharma Search', () => {
 
   it('finds cards by IAST transliteration "karmanye"', () => {
     const results = searchCards('karmanye');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].unit.id).toBe('bg-2-47');
+  });
+
+  it('normalizes IAST diacritics cleanly via Unicode NFD decomposition', () => {
+    expect(normalizeSearchText('śrī')).toBe('sri');
+    expect(normalizeSearchText('gaṇeśa')).toBe('ganesa');
+    expect(normalizeSearchText('kṛṣṇa')).toBe('krsna');
+    expect(normalizeSearchText('karmaṇy-evādhikāras-te')).toBe('karmany-evadhikaras-te');
+    // Preserves Devanagari intact
+    expect(normalizeSearchText('कर्म')).toBe('कर्म');
+  });
+
+  it('finds cards with ASCII queries matching IAST diacritics (e.g. "phalesu", "evadhikaras")', () => {
+    const results = searchCards('phalesu');
     expect(results.length).toBeGreaterThan(0);
     expect(results[0].unit.id).toBe('bg-2-47');
   });

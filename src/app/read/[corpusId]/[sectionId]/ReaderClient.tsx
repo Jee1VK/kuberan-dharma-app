@@ -7,6 +7,7 @@ import { getSection, getCorpus, getAllCards } from '../../../../lib/data';
 import { CorpusId, LanguageCode } from '../../../../lib/types/scripture';
 import { useUserStore } from '../../../../lib/storage/userStore';
 import { DharmaCard } from '../../../../components/card/DharmaCard';
+import { WakeLockToggle } from '../../../../components/common/WakeLockToggle';
 import { ArrowLeft, ArrowRight, BookOpen, Globe } from 'lucide-react';
 
 interface ReaderClientProps {
@@ -49,33 +50,36 @@ export default function ReaderClient({ corpusId, sectionIdNum }: ReaderClientPro
   };
 
   return (
-    <main className="min-h-screen bg-stitch-ivory px-4 py-6 pb-24">
+    <main className="min-h-screen bg-stitch-ivory px-4 py-6 pb-[calc(5.5rem+env(safe-area-inset-bottom,16px))] md:pb-12">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
         {/* Navigation Bar */}
         <div className="flex items-center justify-between pb-3 border-b border-stitch-sand">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-stitch-stone hover:text-stitch-maroon py-1.5 px-3 rounded-lg bg-stitch-parchment border border-stitch-sand"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-stitch-stone hover:text-stitch-maroon py-1.5 px-3 rounded-lg bg-stitch-parchment border border-stitch-sand min-h-[36px]"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Home</span>
           </Link>
 
-          {/* Language Selector */}
-          <div className="flex items-center gap-1.5">
-            <Globe className="w-4 h-4 text-stitch-deepGold" />
-            <select
-              value={preferences.language}
-              onChange={(e) => setLanguage(e.target.value as LanguageCode)}
-              aria-label="Reader Language"
-              className="text-xs font-semibold py-1.5 px-2.5 rounded-lg bg-stitch-parchment border border-stitch-sand text-stitch-slate cursor-pointer"
-            >
-              {languages.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.label}
-                </option>
-              ))}
-            </select>
+          {/* Continuous Reading Wake Lock & Language Selector */}
+          <div className="flex items-center gap-2">
+            <WakeLockToggle defaultEnabled={true} />
+            <div className="flex items-center gap-1.5">
+              <Globe className="w-4 h-4 text-stitch-deepGold" />
+              <select
+                value={preferences.language}
+                onChange={(e) => setLanguage(e.target.value as LanguageCode)}
+                aria-label="Reader Language"
+                className="text-xs font-semibold py-1.5 px-2.5 rounded-lg bg-stitch-parchment border border-stitch-sand text-stitch-slate cursor-pointer min-h-[36px]"
+              >
+                {languages.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 

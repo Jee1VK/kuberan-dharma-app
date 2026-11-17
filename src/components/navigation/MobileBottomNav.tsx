@@ -18,7 +18,7 @@ export const MobileBottomNav: React.FC = () => {
   return (
     <nav
       aria-label="Mobile Navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-stitch-ivory/95 backdrop-blur-xl border-t border-stitch-sand/80 shadow-[0_-4px_24px_rgba(28,25,23,0.06)] pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5"
+      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-stitch-ivory/95 backdrop-blur-xl border-t border-stitch-sand/80 shadow-[0_-4px_24px_rgba(28,25,23,0.06)] pb-safe-bottom pt-1.5"
     >
       <div className="grid grid-cols-4 h-14 max-w-lg mx-auto px-2">
         {navItems.map((item) => {

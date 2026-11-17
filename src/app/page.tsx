@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShlokaOfTheDay } from '../components/home/ShlokaOfTheDay';
+import { DailySankalpamCard } from '../components/home/DailySankalpamCard';
 import { CorpusGrid } from '../components/home/CorpusGrid';
 import { getCuratedStashes } from '../lib/data';
 import { StashCard } from '../components/stashes/StashCard';
@@ -114,6 +115,9 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+
+        {/* Daily Sacred Sankalpam */}
+        <DailySankalpamCard />
 
         {/* Shloka of the Day */}
         <ShlokaOfTheDay />

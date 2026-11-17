@@ -15,7 +15,7 @@ export default function StashesPage() {
   const curatedStashes = getCuratedStashes();
 
   return (
-    <main className="min-h-screen bg-stitch-ivory px-4 py-8 pb-24">
+    <main className="min-h-screen bg-stitch-ivory px-4 py-8 pb-[calc(5.5rem+env(safe-area-inset-bottom,16px))] md:pb-12">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stitch-sand">
