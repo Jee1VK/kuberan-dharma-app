@@ -209,9 +209,12 @@ export default function HomePage() {
             Dedicated to bringing the timeless wisdom of the Gita, Ramayana, Mahabharata, Vedas, and Puranas into everyday modern life.
           </p>
 
-          <p className="text-[11px] text-stitch-stone">
-            © {new Date().getFullYear()} KUBERAN DHARMA APP. Built with Google Stitch Design System.
-          </p>
+          <div className="flex items-center gap-4 text-[11px] text-stitch-stone">
+            <span>© {new Date().getFullYear()} KUBERAN DHARMA APP.</span>
+            <Link href="/privacy" className="text-stitch-maroon hover:underline font-semibold">
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

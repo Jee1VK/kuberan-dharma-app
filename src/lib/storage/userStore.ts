@@ -25,6 +25,15 @@ export function saveLocalUser(data: UserStorageSchema): void {
   }
 }
 
+export function clearLocalUser(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {
+    console.error('Failed to clear user data from localStorage', e);
+  }
+}
+
 export function useUserStore() {
   const [data, setData] = useState<UserStorageSchema>(DEFAULT_USER_STORAGE);
   const [isLoaded, setIsLoaded] = useState(false);

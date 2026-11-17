@@ -1,0 +1,42 @@
+name: Build Signed Android App Bundle (.aab)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-aab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup JDK 21 (Required by Capacitor 8)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install dependencies & build Capacitor static export
+        run: |
+          npm ci
+          npm run build:cap
+          npx cap sync android
+
+      - name: Build Release AAB
+        working-directory: android
+        env:
+          KUBERAN_KEYSTORE_PASSWORD: ${{ secrets.KUBERAN_KEYSTORE_PASSWORD }}
+          KUBERAN_KEY_PASSWORD: ${{ secrets.KUBERAN_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Upload app-release.aab artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kuberan-dharma-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab

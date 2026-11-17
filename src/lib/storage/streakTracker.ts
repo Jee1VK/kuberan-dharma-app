@@ -59,9 +59,17 @@ export function calculateStreakLogic(activeDates: string[], today: string): { cu
     return { currentStreak: 0, bestStreak: 0 };
   }
 
-  // Remove duplicates and sort ascending
-  const uniqueDates = Array.from(new Set(activeDates)).sort();
+  // Remove invalid dates, duplicates, and sort ascending
+  const validDates = activeDates.filter((d) => typeof d === 'string' && !Number.isNaN(new Date(d).getTime()));
+  if (validDates.length === 0) {
+    return { currentStreak: 0, bestStreak: 0 };
+  }
+
+  const uniqueDates = Array.from(new Set(validDates)).sort();
   const todayDate = new Date(today);
+  if (Number.isNaN(todayDate.getTime())) {
+    return { currentStreak: 0, bestStreak: uniqueDates.length };
+  }
 
   // Check if today or yesterday was active
   const lastDateStr = uniqueDates[uniqueDates.length - 1];

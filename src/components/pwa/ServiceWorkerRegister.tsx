@@ -5,7 +5,16 @@ import { getAssetUrl } from '../../lib/utils/basePath';
 
 export const ServiceWorkerRegister: React.FC = () => {
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    if (typeof window === 'undefined') return;
+
+    // Skip Service Worker registration inside Capacitor native containers
+    const isCapacitor =
+      window.location.protocol === 'capacitor:' ||
+      Boolean((window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.());
+
+    if (isCapacitor) return;
+
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       const swUrl = getAssetUrl('/sw.js');
       const swScope = getAssetUrl('/');
 
