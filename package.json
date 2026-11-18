@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:mobile": "node scripts/build-cap.mjs",
     "build:cap": "node scripts/build-cap.mjs",
     "cap:sync": "npm run build:cap && npx cap sync",
     "cap:open:android": "npx cap open android",
