@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Preserve Capacitor & Capgo OTA Updater plugin classes/methods under R8
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }
+-keep class ee.forgr.capacitor_updater.** { *; }
+-keep class com.capacitorjs.** { *; }

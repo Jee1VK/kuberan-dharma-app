@@ -73,15 +73,28 @@ async function getUpdaterPlugin() {
 }
 
 /**
- * Confirms to the native OTA updater that the current web bundle booted cleanly.
- * If an OTA bundle ever fails to reach this call within `appReadyTimeout` (10s),
- * CapacitorUpdater automatically rolls back to the built-in APK bundle.
+ * Confirms to the native OTA updater that the current web bundle booted cleanly,
+ * then prunes stale older OTA bundles from device storage.
  */
 export async function notifyOtaAppReady(): Promise<void> {
   if (!Capacitor.isNativePlatform()) return;
   try {
     const updater = await getUpdaterPlugin();
     await updater.notifyAppReady();
+
+    // Prune stale older bundles so device storage does not grow unbounded
+    const [currentInfo, listInfo] = await Promise.all([updater.current(), updater.list()]);
+    const activeId = currentInfo?.bundle?.id;
+    const bundles = listInfo?.bundles || [];
+    for (const b of bundles) {
+      if (b.id && b.id !== 'builtin' && b.id !== activeId && b.status === 'success') {
+        try {
+          await updater.delete({ id: b.id });
+        } catch {
+          // Non-fatal cleanup error
+        }
+      }
+    }
   } catch (err) {
     console.warn('[Kuberan OTA] notifyAppReady notice:', err);
   }
@@ -107,6 +120,7 @@ export async function getCurrentOtaVersion(): Promise<string> {
 
 /**
  * Fetches the hosted OTA manifest and downloads any newer bundle in the background.
+ * Deduplicates against already-downloaded bundles so bandwidth is never wasted.
  * Safe to call offline — network failures resolve cleanly to `null` with zero errors.
  */
 export async function checkAndDownloadOtaUpdate(options?: {
@@ -147,6 +161,29 @@ export async function checkAndDownloadOtaUpdate(options?: {
     }
 
     const updater = await getUpdaterPlugin();
+
+    // Check if this exact version was already downloaded earlier (avoid duplicate 4MB downloads)
+    try {
+      const existingList = await updater.list();
+      const alreadyDownloaded = (existingList?.bundles || []).find(
+        (b) => b.version === payload.version && b.status === 'success' && b.id
+      );
+      if (alreadyDownloaded) {
+        try {
+          await updater.next({ id: alreadyDownloaded.id });
+        } catch {
+          // Non-fatal
+        }
+        return {
+          bundleId: alreadyDownloaded.id,
+          version: alreadyDownloaded.version,
+          notes: payload.notes,
+        };
+      }
+    } catch {
+      // Proceed with download if list() fails
+    }
+
     const bundle = await updater.download({
       url: payload.url,
       version: payload.version,
