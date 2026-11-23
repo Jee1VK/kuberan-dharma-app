@@ -3,6 +3,7 @@ import { AppNavbar } from "../components/navigation/AppNavbar";
 import { MobileBottomNav } from "../components/navigation/MobileBottomNav";
 import { ServiceWorkerRegister } from "../components/pwa/ServiceWorkerRegister";
 import { CapacitorBackHandler } from "../components/pwa/CapacitorBackHandler";
+import { OtaUpdateManager } from "../components/pwa/OtaUpdateManager";
 import { getAssetUrl } from "../lib/utils/basePath";
 
 export const metadata = {
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-stitch-ivory text-stitch-slate antialiased flex flex-col selection:bg-stitch-maroon selection:text-stitch-ivory pb-[calc(5rem+env(safe-area-inset-bottom,16px))] md:pb-0">
         <ServiceWorkerRegister />
         <CapacitorBackHandler />
+        <OtaUpdateManager />
         <AppNavbar />
         {children}
         <MobileBottomNav />

@@ -36,3 +36,7 @@ next-env.d.ts
 *.p12
 *.jks
 *.keystore
+
+# OTA bundle staging & compiled APK releases
+/ota-dist/
+/releases/
