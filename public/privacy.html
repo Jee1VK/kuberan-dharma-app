@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="referrer" content="no-referrer" />
   <title>Privacy Policy — Kuberan Dharma App</title>
   <style>
     body {
@@ -39,21 +40,27 @@
 <body>
   <main>
     <div class="badge">Kuberan Dharma App (com.kuberansilks.dharma)</div>
-    <h1>Privacy Policy &amp; Zero-Telemetry Pledge</h1>
+    <h1>Privacy Policy &amp; DPDP Act 2023 Notice</h1>
     <p><strong>Effective Date:</strong> November 2026</p>
 
-    <h2>1. Zero Personal Data Collection</h2>
-    <p>Kuberan Dharma is an offline-first educational scripture app. We do not require registration, accounts, emails, phone numbers, or personal details. We do not collect, store, sell, or share any personal data or usage telemetry with any server or third party.</p>
+    <h2>1. Statutory Framework &amp; Zero Personal Data Collection</h2>
+    <p>This Privacy Notice complies with India&rsquo;s <strong>Digital Personal Data Protection (DPDP) Act, 2023</strong>, the <strong>DPDP Rules, 2025</strong>, and global data minimization principles (GDPR). Kuberan Dharma is a local-first educational scripture app. We do not require registration, accounts, emails, phone numbers, location permissions, or personal identifiers. We do not collect, log, sell, or share any personal data or behavioral telemetry.</p>
 
-    <h2>2. On-Device Local Storage Only</h2>
-    <p>Your chosen reading language, daily reflection streak, and saved Stash bookmarks are stored strictly locally on your device (<code>localStorage</code> / Apple <code>NSUserDefaults</code> reason <code>CA92.1</code>). This data never leaves your device.</p>
+    <h2>2. On-Device Local Storage &amp; Retention</h2>
+    <p>Your chosen reading language, daily reflection streak, and saved Stash bookmarks are stored strictly locally on your device (<code>localStorage</code> / Apple <code>NSUserDefaults</code> reason <code>CA92.1</code>; Android cloud backup disabled via <code>android:allowBackup="false"</code>). Data remains on-device solely until cleared via the in-app data reset/export controls or by uninstalling the app.</p>
 
-    <h2>3. No Ads &amp; No Tracking SDKs</h2>
-    <p>Kuberan Dharma contains zero advertisements, zero third-party analytics SDKs, and zero cross-app tracking.</p>
+    <h2>3. Background OTA Update Manifest Check</h2>
+    <p>On native mobile builds when online, the app performs a read-only HTTPS <code>GET</code> check against <code>https://jee1vk.github.io/kuberan-dharma-app/ota-manifest.json</code> (hosted on GitHub Pages) to fetch SHA-256 integrity-verified scripture and UI bug-fix bundles. Updater telemetry is disabled (<code>statsUrl: ""</code>); zero personal data or usage telemetry is sent by the app, while standard HTTP delivery metadata is processed by GitHub Pages. In Airplane Mode, the app operates 100% offline.</p>
 
-    <h2>4. Contact &amp; Support</h2>
+    <h2>4. Children&rsquo;s Privacy (&lt;18 Years — DPDP Act Sec 9)</h2>
+    <p>Kuberan Dharma provides family-safe educational scripture content suitable for all ages. In compliance with Section 9 of the DPDP Act, 2023, we collect zero personal data from users under 18 years of age and perform zero behavioral monitoring, profiling, or targeted advertising.</p>
+
+    <h2>5. No Ads &amp; Open-Source Notices</h2>
+    <p>Kuberan Dharma contains zero advertisements and zero third-party tracking SDKs. Open-source components used unmodified include: <code>@capgo/capacitor-updater</code> (<strong>MPL-2.0</strong>, source at <a href="https://github.com/Cap-go/capacitor-updater" rel="noopener noreferrer">github.com/Cap-go/capacitor-updater</a>), <code>Next.js</code> &amp; <code>React</code> (<strong>MIT</strong>), <code>Ionic Capacitor</code> (<strong>MIT</strong>), <code>Lucide Icons</code> (<strong>ISC</strong>), and <code>MiniSearch</code> (<strong>MIT</strong>).</p>
+
+    <h2>6. Contact &amp; Support</h2>
     <p>Publisher: Kuberan Silks, Chickpet, Bengaluru, Karnataka 560053, India<br />
-    Email: <a href="mailto:support@kuberansilks.com">support@kuberansilks.com</a></p>
+    Email: <a href="mailto:support@kuberansilks.com">support@kuberansilks.com</a> | <a href="./terms.html">Terms of Use</a></p>
   </main>
 </body>
 </html>

@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 export interface OtaManifest {
   version: string;
   url: string;
+  sha256?: string;
   notes?: string;
   minNativeVersion?: string;
   builtAt?: string;
@@ -11,6 +12,7 @@ export interface OtaManifest {
 export interface DownloadedOtaUpdate {
   bundleId: string;
   version: string;
+  sha256: string;
   notes?: string;
 }
 
@@ -22,6 +24,14 @@ export const BUILTIN_OTA_VERSION = process.env.NEXT_PUBLIC_OTA_VERSION || '1.0.0
 
 const OTA_LAST_CHECK_KEY = 'kuberan_dharma_ota_last_check';
 const CHECK_THROTTLE_MS = 5 * 60 * 1000; // 5 minutes
+const SHA256_HEX_REGEX = /^[a-f0-9]{64}$/i;
+
+/**
+ * Validates that a value is a 64-character hexadecimal SHA-256 digest.
+ */
+export function isValidSha256Hex(value: unknown): value is string {
+  return typeof value === 'string' && SHA256_HEX_REGEX.test(value.trim());
+}
 
 /**
  * Compares dotted semantic versions (e.g. "1.0.12" > "1.0.2").
@@ -54,16 +64,18 @@ export function isNewerVersion(remoteVersion: string, currentVersion: string): b
 }
 
 /**
- * Validates an OTA manifest payload. Enforces HTTPS bundle URLs only.
+ * Validates an OTA manifest payload. Enforces HTTPS bundle URLs and a valid
+ * 64-character SHA-256 hex digest before allowing any bundle download.
  */
-export function isValidOtaManifest(data: unknown): data is OtaManifest {
+export function isValidOtaManifest(data: unknown): data is OtaManifest & { sha256: string } {
   if (!data || typeof data !== 'object') return false;
   const candidate = data as Record<string, unknown>;
   return (
     typeof candidate.version === 'string' &&
     candidate.version.trim().length > 0 &&
     typeof candidate.url === 'string' &&
-    candidate.url.startsWith('https://')
+    candidate.url.startsWith('https://') &&
+    isValidSha256Hex(candidate.sha256)
   );
 }
 
@@ -119,8 +131,8 @@ export async function getCurrentOtaVersion(): Promise<string> {
 }
 
 /**
- * Fetches the hosted OTA manifest and downloads any newer bundle in the background.
- * Deduplicates against already-downloaded bundles so bandwidth is never wasted.
+ * Fetches the hosted OTA manifest, enforces SHA-256 integrity verification,
+ * and downloads any newer bundle in the background.
  * Safe to call offline — network failures resolve cleanly to `null` with zero errors.
  */
 export async function checkAndDownloadOtaUpdate(options?: {
@@ -155,6 +167,8 @@ export async function checkAndDownloadOtaUpdate(options?: {
     const payload: unknown = await response.json();
     if (!isValidOtaManifest(payload)) return null;
 
+    const expectedSha256 = payload.sha256.trim().toLowerCase();
+
     const currentVersion = await getCurrentOtaVersion();
     if (!isNewerVersion(payload.version, currentVersion)) {
       return null;
@@ -162,11 +176,15 @@ export async function checkAndDownloadOtaUpdate(options?: {
 
     const updater = await getUpdaterPlugin();
 
-    // Check if this exact version was already downloaded earlier (avoid duplicate 4MB downloads)
+    // Reuse an already-verified local bundle matching both version and SHA-256
     try {
       const existingList = await updater.list();
       const alreadyDownloaded = (existingList?.bundles || []).find(
-        (b) => b.version === payload.version && b.status === 'success' && b.id
+        (b) =>
+          b.version === payload.version &&
+          b.status === 'success' &&
+          Boolean(b.id) &&
+          (!b.checksum || b.checksum.toLowerCase() === expectedSha256)
       );
       if (alreadyDownloaded) {
         try {
@@ -177,19 +195,32 @@ export async function checkAndDownloadOtaUpdate(options?: {
         return {
           bundleId: alreadyDownloaded.id,
           version: alreadyDownloaded.version,
+          sha256: expectedSha256,
           notes: payload.notes,
         };
       }
     } catch {
-      // Proceed with download if list() fails
+      // Proceed with verified download if list() fails
     }
 
+    // Native atomic download verifies streaming SHA-256 before extracting zip
     const bundle = await updater.download({
       url: payload.url,
       version: payload.version,
+      checksum: expectedSha256,
     });
 
     if (!bundle?.id) return null;
+
+    // Secondary defense-in-depth checksum verification before queueing/applying
+    if (bundle.checksum && bundle.checksum.toLowerCase() !== expectedSha256) {
+      try {
+        await updater.delete({ id: bundle.id });
+      } catch {
+        // Ignore delete error
+      }
+      return null;
+    }
 
     // Queue automatically for next app start even if user dismisses the prompt
     try {
@@ -201,10 +232,11 @@ export async function checkAndDownloadOtaUpdate(options?: {
     return {
       bundleId: bundle.id,
       version: bundle.version || payload.version,
+      sha256: expectedSha256,
       notes: payload.notes,
     };
   } catch {
-    // Offline or network timeout — silently keep using local bundle
+    // Offline, timeout, or SHA-256 mismatch — safely keep running current bundle
     return null;
   } finally {
     if (timeoutId) clearTimeout(timeoutId);

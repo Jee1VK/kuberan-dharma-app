@@ -1,4 +1,5 @@
 import { execFileSync, execSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -59,14 +60,18 @@ if (!packed) {
   throw new Error('Could not package OTA zip: neither python3 nor python is available.');
 }
 
+const zipBuffer = fs.readFileSync(zipPath);
+const sha256 = crypto.createHash('sha256').update(zipBuffer).digest('hex');
+
 const manifest = {
   version: otaVersion,
   url: `${baseUrl}/ota/kuberan-dharma-bundle.zip`,
+  sha256,
   notes: otaNotes,
   minNativeVersion: '1.0.0',
   builtAt: new Date().toISOString(),
 };
 
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
-console.log(`[Kuberan OTA] Manifest written to ${manifestPath}`);
+console.log(`[Kuberan OTA] Manifest written to ${manifestPath} (sha256=${sha256})`);
 console.log(JSON.stringify(manifest, null, 2));

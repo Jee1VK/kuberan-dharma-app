@@ -9,6 +9,7 @@ import { getAssetUrl } from "../lib/utils/basePath";
 export const metadata = {
   title: "KUBERAN DHARMA APP — Learn Sacred Scriptures",
   description: "Learn Ramayana, Mahabharata, Bhagavad Gita, Vedas, and Puranas in bite-sized Dharma Cards across 6 languages.",
+  referrer: "no-referrer" as const,
 };
 
 export const viewport = {

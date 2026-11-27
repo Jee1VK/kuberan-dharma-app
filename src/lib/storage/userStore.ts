@@ -29,9 +29,30 @@ export function clearLocalUser(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('kuberan_dharma_installed');
+    localStorage.removeItem('kuberan_dharma_ota_last_check');
   } catch (e) {
     console.error('Failed to clear user data from localStorage', e);
   }
+  try {
+    sessionStorage.clear();
+  } catch (e) {
+    console.error('Failed to clear sessionStorage', e);
+  }
+}
+
+export function exportLocalUserJson(): string {
+  const userData = getLocalUser();
+  return JSON.stringify(
+    {
+      app: 'Kuberan Dharma',
+      appId: 'com.kuberansilks.dharma',
+      exportedAt: new Date().toISOString(),
+      data: userData,
+    },
+    null,
+    2
+  );
 }
 
 export function useUserStore() {
