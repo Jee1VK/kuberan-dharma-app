@@ -91,30 +91,31 @@ export const AppNavbar: React.FC = () => {
         isNative ? 'pt-[max(2.25rem,env(safe-area-inset-top,36px))]' : 'pt-safe-top'
       }`}
     >
-      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+      <div className="max-w-5xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
         {/* Brand & Kuberan Logo wrapped in clickable link to kuberansilks.com */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
           <a
             href="https://kuberansilks.com/"
             target="_blank"
             rel="noopener noreferrer"
             title="Visit Kuberan Silks (Opens in new tab)"
-            className="flex items-center justify-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5 min-w-[44px] min-h-[44px] flex-shrink-0"
+            className="flex items-center justify-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5 min-w-[40px] sm:min-w-[44px] min-h-[44px] flex-shrink-0"
           >
             <img
               src={getAssetUrl('/images/kuberan_logo_transparent.png')}
               alt="Kuberan Logo"
-              className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:scale-105 transition-transform"
+              className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:scale-105 transition-transform"
             />
           </a>
 
           <Link href="/" className="flex flex-col min-w-0">
-            <span className="font-cinzel font-bold text-sm sm:text-base md:text-lg tracking-wider text-stitch-maroon leading-none truncate">
+            <span className="font-cinzel font-bold text-[13px] sm:text-base md:text-lg tracking-wide text-stitch-maroon leading-none whitespace-nowrap">
               KUBERAN DHARMA
             </span>
-            <span className="text-[10px] uppercase font-sans font-semibold tracking-widest text-stitch-deepGold flex items-center gap-1 mt-0.5 truncate">
-              <span>Sacred Micro-Wisdom</span>
-              <span className="hidden sm:inline text-stitch-stone">· by Kuberan Silks</span>
+            <span className="text-[9px] sm:text-[10px] uppercase font-sans font-semibold tracking-widest text-stitch-deepGold flex items-center gap-1 mt-0.5 whitespace-nowrap">
+              <span className="sm:hidden">Sacred Wisdom</span>
+              <span className="hidden sm:inline">Sacred Micro-Wisdom</span>
+              <span className="hidden md:inline text-stitch-stone">· by Kuberan Silks</span>
             </span>
           </Link>
         </div>
@@ -146,15 +147,15 @@ export const AppNavbar: React.FC = () => {
         </nav>
 
         {/* Right Actions: Language, Update App, Streak, and Download */}
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {/* Global Language Pill */}
           <div className="relative flex items-center">
-            <Globe className="w-3.5 h-3.5 text-stitch-deepGold absolute left-2.5 pointer-events-none" />
+            <Globe className="w-3.5 h-3.5 text-stitch-deepGold absolute left-2 pointer-events-none" />
             <select
               value={preferences.language}
               onChange={(e) => setLanguage(e.target.value as any)}
               aria-label="Select Scripture Language"
-              className="pl-7 pr-2.5 py-1 text-xs rounded-xl bg-stitch-parchment/90 border border-stitch-sand text-stitch-slate font-semibold cursor-pointer focus:outline-none focus:ring-1 focus:ring-stitch-maroon appearance-none shadow-sm min-h-[44px]"
+              className="w-[54px] sm:w-auto pl-6 pr-1 sm:pr-2.5 py-1 text-[11px] sm:text-xs rounded-xl bg-stitch-parchment/90 border border-stitch-sand text-stitch-slate font-semibold cursor-pointer focus:outline-none focus:ring-1 focus:ring-stitch-maroon appearance-none shadow-sm min-h-[44px]"
             >
               {languages.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -171,7 +172,7 @@ export const AppNavbar: React.FC = () => {
             disabled={updateStatus === 'checking' || updateStatus === 'applying'}
             title="Check for app updates"
             aria-label="Check for app updates"
-            className="min-h-[44px] min-w-[44px] px-2.5 py-1 rounded-xl bg-stitch-parchment/90 border border-stitch-sand hover:border-stitch-gold text-stitch-maroon text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.97] transition-all cursor-pointer disabled:opacity-60"
+            className="min-h-[44px] min-w-[40px] sm:min-w-[44px] px-2 sm:px-2.5 py-1 rounded-xl bg-stitch-parchment/90 border border-stitch-sand hover:border-stitch-gold text-stitch-maroon text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.97] transition-all cursor-pointer disabled:opacity-60"
           >
             <RefreshCw
               className={`w-4 h-4 text-stitch-maroon ${
@@ -185,7 +186,7 @@ export const AppNavbar: React.FC = () => {
 
           {/* Daily Streak Counter with Diya/Flame */}
           <div
-            className="px-2.5 sm:px-3 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[44px] tabular-nums"
+            className="px-2 sm:px-3 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-[11px] sm:text-xs font-bold text-stitch-maroon min-h-[44px] tabular-nums"
             title={`${streak.currentStreak || 1} day learning streak!`}
           >
             <Sparkles className="w-3.5 h-3.5 text-stitch-gold fill-stitch-gold" />
