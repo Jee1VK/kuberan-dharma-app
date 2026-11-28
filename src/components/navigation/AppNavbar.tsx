@@ -1,16 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Sparkles, Bookmark, BookOpen, ExternalLink, Globe } from 'lucide-react';
+import { Compass, Sparkles, Bookmark, BookOpen, ExternalLink, Globe, RefreshCw } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 import { useUserStore } from '../../lib/storage/userStore';
 import { getAssetUrl } from '../../lib/utils/basePath';
 import { DownloadAppButton } from '../pwa/DownloadAppButton';
+import {
+  checkAndDownloadOtaUpdate,
+  applyOtaBundleNow,
+  getCurrentOtaVersion,
+} from '../../lib/ota/otaUpdater';
 
 export const AppNavbar: React.FC = () => {
   const pathname = usePathname();
   const { streak, preferences, setLanguage } = useUserStore();
+  const [isNative, setIsNative] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState<'idle' | 'checking' | 'uptodate' | 'offline' | 'applying'>('idle');
+  const [statusMessage, setStatusMessage] = useState<string>('');
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Compass },
@@ -28,17 +41,65 @@ export const AppNavbar: React.FC = () => {
     { code: 'te', label: 'తెలుగు' },
   ];
 
+  const showTransientStatus = (status: 'uptodate' | 'offline', msg: string) => {
+    setUpdateStatus(status);
+    setStatusMessage(msg);
+    setTimeout(() => {
+      setUpdateStatus('idle');
+      setStatusMessage('');
+    }, 3500);
+  };
+
+  const handleManualUpdateCheck = async () => {
+    if (updateStatus === 'checking' || updateStatus === 'applying') return;
+
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      showTransientStatus('offline', 'Connect to internet to check updates');
+      return;
+    }
+
+    setUpdateStatus('checking');
+    setStatusMessage('Checking for updates...');
+
+    if (Capacitor.isNativePlatform()) {
+      const downloaded = await checkAndDownloadOtaUpdate({ force: true });
+      if (downloaded) {
+        setUpdateStatus('applying');
+        setStatusMessage(`Applying v${downloaded.version}...`);
+        await applyOtaBundleNow(downloaded.bundleId);
+      } else {
+        const currentVer = await getCurrentOtaVersion();
+        showTransientStatus('uptodate', `Up to date (v${currentVer})`);
+      }
+    } else {
+      // Web / PWA: trigger SW update check & reload
+      try {
+        if ('serviceWorker' in navigator) {
+          const reg = await navigator.serviceWorker.getRegistration();
+          if (reg) await reg.update();
+        }
+        window.location.reload();
+      } catch {
+        window.location.reload();
+      }
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-stitch-ivory/95 backdrop-blur-md border-b border-stitch-sand/80 shadow-sm">
-      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+    <header
+      className={`sticky top-0 z-40 w-full bg-stitch-ivory/95 backdrop-blur-md border-b border-stitch-sand/80 shadow-sm ${
+        isNative ? 'pt-[max(2.25rem,env(safe-area-inset-top,36px))]' : 'pt-safe-top'
+      }`}
+    >
+      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
         {/* Brand & Kuberan Logo wrapped in clickable link to kuberansilks.com */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <a
             href="https://kuberansilks.com/"
             target="_blank"
             rel="noopener noreferrer"
             title="Visit Kuberan Silks (Opens in new tab)"
-            className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5 min-w-[44px] min-h-[44px]"
+            className="flex items-center justify-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stitch-gold rounded-lg p-0.5 min-w-[44px] min-h-[44px] flex-shrink-0"
           >
             <img
               src={getAssetUrl('/images/kuberan_logo_transparent.png')}
@@ -47,11 +108,11 @@ export const AppNavbar: React.FC = () => {
             />
           </a>
 
-          <Link href="/" className="flex flex-col">
-            <span className="font-cinzel font-bold text-base md:text-lg tracking-wider text-stitch-maroon leading-none">
+          <Link href="/" className="flex flex-col min-w-0">
+            <span className="font-cinzel font-bold text-sm sm:text-base md:text-lg tracking-wider text-stitch-maroon leading-none truncate">
               KUBERAN DHARMA
             </span>
-            <span className="text-[10px] uppercase font-sans font-semibold tracking-widest text-stitch-deepGold flex items-center gap-1 mt-0.5">
+            <span className="text-[10px] uppercase font-sans font-semibold tracking-widest text-stitch-deepGold flex items-center gap-1 mt-0.5 truncate">
               <span>Sacred Micro-Wisdom</span>
               <span className="hidden sm:inline text-stitch-stone">· by Kuberan Silks</span>
             </span>
@@ -84,8 +145,8 @@ export const AppNavbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Actions: Language, Streak, and Download */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Right Actions: Language, Update App, Streak, and Download */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           {/* Global Language Pill */}
           <div className="relative flex items-center">
             <Globe className="w-3.5 h-3.5 text-stitch-deepGold absolute left-2.5 pointer-events-none" />
@@ -103,11 +164,28 @@ export const AppNavbar: React.FC = () => {
             </select>
           </div>
 
+          {/* Manual Check & Apply Update Button */}
+          <button
+            type="button"
+            onClick={handleManualUpdateCheck}
+            disabled={updateStatus === 'checking' || updateStatus === 'applying'}
+            title="Check for app updates"
+            aria-label="Check for app updates"
+            className="min-h-[44px] min-w-[44px] px-2.5 py-1 rounded-xl bg-stitch-parchment/90 border border-stitch-sand hover:border-stitch-gold text-stitch-maroon text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.97] transition-all cursor-pointer disabled:opacity-60"
+          >
+            <RefreshCw
+              className={`w-4 h-4 text-stitch-maroon ${
+                updateStatus === 'checking' || updateStatus === 'applying' ? 'animate-spin' : ''
+              }`}
+            />
+            <span className="hidden sm:inline">Update</span>
+          </button>
+
           <DownloadAppButton variant="navbar" />
 
           {/* Daily Streak Counter with Diya/Flame */}
           <div
-            className="px-3 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[44px] tabular-nums"
+            className="px-2.5 sm:px-3 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[44px] tabular-nums"
             title={`${streak.currentStreak || 1} day learning streak!`}
           >
             <Sparkles className="w-3.5 h-3.5 text-stitch-gold fill-stitch-gold" />
@@ -126,6 +204,17 @@ export const AppNavbar: React.FC = () => {
           </a>
         </div>
       </div>
+
+      {/* Transient Update Check Status Bar */}
+      {statusMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="w-full bg-stitch-maroon text-stitch-ivory text-[11px] font-semibold text-center py-1.5 px-4 border-t border-stitch-gold/40"
+        >
+          {statusMessage}
+        </div>
+      )}
     </header>
   );
 };
