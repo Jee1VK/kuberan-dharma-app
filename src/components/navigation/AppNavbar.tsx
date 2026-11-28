@@ -48,10 +48,10 @@ export const AppNavbar: React.FC = () => {
           </a>
 
           <Link href="/" className="flex flex-col">
-            <span className="font-serif font-black text-base md:text-lg tracking-wide text-stitch-maroon leading-none">
+            <span className="font-cinzel font-bold text-base md:text-lg tracking-wider text-stitch-maroon leading-none">
               KUBERAN DHARMA
             </span>
-            <span className="text-[10px] uppercase font-sans font-semibold tracking-widest text-stitch-deepGold flex items-center gap-1">
+            <span className="text-[10px] uppercase font-sans font-semibold tracking-widest text-stitch-deepGold flex items-center gap-1 mt-0.5">
               <span>Sacred Micro-Wisdom</span>
               <span className="hidden sm:inline text-stitch-stone">· by Kuberan Silks</span>
             </span>
@@ -88,12 +88,12 @@ export const AppNavbar: React.FC = () => {
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Global Language Pill */}
           <div className="relative flex items-center">
-            <Globe className="w-3.5 h-3.5 text-stitch-deepGold absolute left-2 pointer-events-none" />
+            <Globe className="w-3.5 h-3.5 text-stitch-deepGold absolute left-2.5 pointer-events-none" />
             <select
               value={preferences.language}
               onChange={(e) => setLanguage(e.target.value as any)}
               aria-label="Select Scripture Language"
-              className="pl-6 pr-2 py-1 text-xs rounded-xl bg-stitch-parchment/90 border border-stitch-sand text-stitch-slate font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-stitch-maroon appearance-none shadow-sm min-h-[36px]"
+              className="pl-7 pr-2.5 py-1 text-xs rounded-xl bg-stitch-parchment/90 border border-stitch-sand text-stitch-slate font-semibold cursor-pointer focus:outline-none focus:ring-1 focus:ring-stitch-maroon appearance-none shadow-sm min-h-[44px]"
             >
               {languages.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -107,7 +107,7 @@ export const AppNavbar: React.FC = () => {
 
           {/* Daily Streak Counter with Diya/Flame */}
           <div
-            className="px-2.5 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[36px]"
+            className="px-3 py-1 rounded-full bg-stitch-parchment border border-stitch-sand flex items-center gap-1 text-xs font-bold text-stitch-maroon min-h-[44px] tabular-nums"
             title={`${streak.currentStreak || 1} day learning streak!`}
           >
             <Sparkles className="w-3.5 h-3.5 text-stitch-gold fill-stitch-gold" />

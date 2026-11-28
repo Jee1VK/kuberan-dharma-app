@@ -29,27 +29,37 @@ export const CorpusGrid: React.FC = () => {
         </div>
       </div>
 
+      {/* Asymmetric Bento Grid: Gita spans 2 cols on desktop so all 5 fill 2 clean rows with zero orphan gap */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {corpuses.map((corpus) => {
           const title = corpus.title[preferences.language] || corpus.title.en;
           const description = corpus.description[preferences.language] || corpus.description.en;
+          const isFeatured = corpus.id === 'bhagavad-gita';
 
           return (
             <div
               key={corpus.id}
-              className="bg-stitch-ivory rounded-2xl p-5 border border-stitch-sand/80 shadow-card hover:shadow-cardHover hover:border-stitch-gold/60 transition-all flex flex-col justify-between gap-4"
+              className={`relative rounded-2xl p-5 border shadow-stitch-layered hover:border-stitch-gold/80 transition-all flex flex-col justify-between gap-4 overflow-hidden ${
+                isFeatured
+                  ? 'sm:col-span-2 bg-gradient-to-br from-stitch-parchment/90 via-stitch-ivory to-stitch-parchment/60 border-stitch-gold/50'
+                  : 'bg-stitch-ivory border-stitch-sand/80'
+              }`}
             >
+              {isFeatured && (
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-stitch-maroon via-stitch-gold to-stitch-maroon" />
+              )}
+
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-stitch-maroon/10 text-stitch-maroon border border-stitch-maroon/20">
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-stitch-maroon/10 text-stitch-maroon border border-stitch-maroon/20">
                     {corpus.category}
                   </span>
-                  <span className="text-[11px] font-mono text-stitch-deepGold font-semibold">
+                  <span className="text-[11px] font-mono text-stitch-deepGold font-semibold tabular-nums">
                     {corpusBadges[corpus.id]}
                   </span>
                 </div>
 
-                <h3 className="font-serif font-bold text-lg text-stitch-slate mb-1">
+                <h3 className={`font-serif font-bold text-stitch-slate mb-1 ${isFeatured ? 'text-xl md:text-2xl text-stitch-maroon' : 'text-lg'}`}>
                   {title}
                 </h3>
 
@@ -57,22 +67,22 @@ export const CorpusGrid: React.FC = () => {
                   {corpus.sanskritTitle}
                 </p>
 
-                <p className="text-xs text-stitch-stone line-clamp-3 leading-relaxed">
+                <p className={`text-xs md:text-sm text-stitch-stone leading-relaxed ${isFeatured ? 'max-w-xl' : 'line-clamp-3'}`}>
                   {description}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-stitch-sand/50">
+              <div className="flex items-center justify-between pt-3 border-t border-stitch-sand/60">
                 <Link
-                  href={corpus.id === 'bhagavad-gita' ? '/read/bhagavad-gita/1' : `/feed`}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-stitch-maroon hover:underline"
+                  href={isFeatured ? '/read/bhagavad-gita/1' : `/feed`}
+                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs font-semibold text-stitch-maroon hover:underline"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-stitch-gold" />
-                  <span>{corpus.id === 'bhagavad-gita' ? 'Read Chapters' : 'Explore Cards'}</span>
-                  <ArrowRight className="w-3 h-3" />
+                  <span>{isFeatured ? 'Read Chapters' : 'Explore Cards'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
 
-                <span className="text-[11px] font-mono text-stitch-stone">
+                <span className="text-[11px] font-mono text-stitch-stone tabular-nums">
                   {corpus.totalUnits} Units
                 </span>
               </div>

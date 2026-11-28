@@ -9,112 +9,117 @@ import { getCuratedStashes } from '../lib/data';
 import { StashCard } from '../components/stashes/StashCard';
 import { useUserStore } from '../lib/storage/userStore';
 import { getAssetUrl } from '../lib/utils/basePath';
-import { Sparkles, ArrowRight, Bookmark, Compass, Smartphone } from 'lucide-react';
+import { ArrowRight, Bookmark, Compass, Smartphone, BookOpen } from 'lucide-react';
 import { DownloadAppButton } from '../components/pwa/DownloadAppButton';
 import { useIsStandalone } from '../lib/hooks/useIsStandalone';
 
 export default function HomePage() {
-  const { preferences, setLanguage } = useUserStore();
+  const { preferences } = useUserStore();
   const curatedStashes = getCuratedStashes();
   const isStandalone = useIsStandalone();
 
-  const languages: Array<{ code: any; label: string }> = [
-    { code: 'en', label: 'English' },
-    { code: 'hi', label: 'हिन्दी' },
-    { code: 'kn', label: 'ಕನ್ನಡ' },
-    { code: 'sa', label: 'संस्कृतम्' },
-    { code: 'ta', label: 'தமிழ்' },
-    { code: 'te', label: 'తెలుగు' },
+  const intentPaths = [
+    { label: 'Inner Peace', tag: 'Inner Peace' },
+    { label: 'Duty & Karma', tag: 'Dharma & Ethics' },
+    { label: 'Leadership', tag: 'Leadership' },
+    { label: 'Mindset', tag: 'Mindset' },
   ];
 
   return (
     <div className="min-h-screen flex flex-col bg-stitch-ivory">
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6 md:py-8 flex flex-col gap-10">
-        {/* Hero Section */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-stitch-parchment/90 via-stitch-ivory to-stitch-parchment/80 border-2 border-stitch-sand/90 p-6 md:p-10 shadow-sm overflow-hidden text-center flex flex-col items-center">
+        {/* Asymmetric Editorial Sanctum Hero (Korvai Zari Accent + 60/40 Rhythm) */}
+        <section className="relative rounded-3xl bg-gradient-to-br from-stitch-parchment/90 via-stitch-ivory to-stitch-parchment/70 border border-stitch-sand shadow-stitch-layered overflow-hidden">
+          {/* Woven Korvai Zari Top & Left Edge */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-stitch-maroon via-stitch-gold to-stitch-maroon" />
+          <div className="hidden md:block absolute top-0 bottom-0 left-0 w-1.5 bg-gradient-to-b from-stitch-maroon via-stitch-gold to-stitch-maroon" />
+
           {/* Subtle Centered Kuberan Heritage Watermark */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
             <img
               src={getAssetUrl('/images/kuberan_watermark_full.png')}
               alt=""
               aria-hidden="true"
-              className="w-full max-w-[240px] sm:max-w-[320px] md:max-w-[400px] max-h-[65%] object-contain opacity-[0.04]"
+              className="w-full max-w-[240px] sm:max-w-[320px] md:max-w-[380px] max-h-[65%] object-contain opacity-[0.04]"
             />
           </div>
 
-          {/* Sacred Eyebrow Badge */}
-          <div className="relative z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stitch-gold/15 border border-stitch-gold/30 text-stitch-deepGold text-[11px] font-bold uppercase tracking-wider mb-2">
-            <Sparkles className="w-3 h-3 text-stitch-gold" />
-            <span>Sacred Daily Wisdom · Kuberan Silks Heritage</span>
-          </div>
+          <div className="relative z-10 p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
+            {/* Left 7 Columns: Editorial Headline & Primary Action */}
+            <div className="md:col-span-7 flex flex-col items-start text-left gap-3">
+              <span className="text-[11px] font-cinzel font-bold uppercase tracking-[0.18em] text-stitch-deepGold">
+                Kuberan Silks · Chickpet Heritage
+              </span>
 
-          <h1 className="relative z-10 font-serif font-bold text-2xl sm:text-3xl md:text-5xl text-stitch-maroon tracking-tight leading-tight max-w-3xl">
-            Timeless Wisdom from Ramayana to the Gita, in Bite-Sized Cards
-          </h1>
+              <h1 className="font-serif font-bold text-3xl sm:text-4xl md:text-[2.65rem] text-stitch-maroon tracking-tight leading-[1.15]">
+                Timeless Wisdom from Ramayana to the Gita, in Bite-Sized Cards
+              </h1>
 
-          <p className="relative z-10 text-xs sm:text-sm md:text-base text-stitch-stone max-w-2xl mt-2.5 leading-relaxed">
-            Understand the deep spiritual essence, original Sanskrit shlokas, and everyday life applications across 6 Indian languages for peace and clarity.
-          </p>
+              <div className="w-24 zari-divider my-0.5" aria-hidden="true" />
 
-          {/* Life Intent Quick Pills */}
-          <div className="relative z-10 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4 max-w-xl">
-            <span className="text-[11px] uppercase tracking-wider text-stitch-deepGold font-bold mr-1">Seek Wisdom For:</span>
-            {[
-              { label: 'Inner Peace', tag: 'Inner Peace' },
-              { label: 'Duty & Karma', tag: 'Dharma & Ethics' },
-              { label: 'Leadership', tag: 'Leadership' },
-              { label: 'Mindset', tag: 'Mindset' },
-            ].map((item) => (
+              <p className="text-sm md:text-base text-stitch-stone leading-relaxed max-w-xl">
+                Original Sanskrit shlokas, syllable chanting guides, and practical everyday reflections across 6 Indian languages — 100% offline.
+              </p>
+
+              {/* Single Primary CTA (Zari Sheen) + Quiet Secondary */}
+              <div className="flex flex-wrap items-center gap-3 mt-2">
+                <Link
+                  href="/feed"
+                  className="btn-zari min-h-[44px] px-6 py-2.5 rounded-2xl font-serif font-bold text-sm flex items-center gap-2 shadow-sm border border-stitch-gold/50"
+                >
+                  <Compass className="w-4 h-4 text-stitch-gold" />
+                  <span>Explore Wisdom Feed</span>
+                </Link>
+
+                <Link
+                  href="/stashes"
+                  className="min-h-[44px] px-5 py-2.5 rounded-2xl bg-stitch-ivory/90 border border-stitch-gold/60 text-stitch-maroon hover:bg-stitch-parchment font-serif font-bold text-sm flex items-center gap-2 transition-colors active:scale-[0.97]"
+                >
+                  <Bookmark className="w-4 h-4 text-stitch-deepGold" />
+                  <span>Browse Stashes</span>
+                </Link>
+
+                <DownloadAppButton variant="hero" />
+              </div>
+            </div>
+
+            {/* Right 5 Columns: Contemplative Intent Panel */}
+            <div className="md:col-span-5 bg-stitch-ivory/85 backdrop-blur-sm rounded-2xl border border-stitch-sand/90 p-5 flex flex-col gap-3.5 shadow-sm">
+              <div className="flex items-center justify-between border-b border-stitch-sand/70 pb-2.5">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-stitch-deepGold">
+                  Seek Wisdom For
+                </span>
+                <span className="text-[11px] font-mono text-stitch-stone tabular-nums">
+                  6 Languages
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {intentPaths.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={`/feed?filter=${encodeURIComponent(item.tag)}`}
+                    className="min-h-[44px] px-3 py-2 rounded-xl bg-stitch-parchment/80 border border-stitch-sand/90 text-xs font-semibold text-stitch-slate hover:border-stitch-gold hover:text-stitch-maroon transition-colors flex items-center justify-between gap-1 active:scale-[0.97]"
+                  >
+                    <span>{item.label}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-stitch-deepGold flex-shrink-0" />
+                  </Link>
+                ))}
+              </div>
+
               <Link
-                key={item.label}
-                href={`/feed?filter=${encodeURIComponent(item.tag)}`}
-                className="px-2.5 py-1 text-xs font-semibold rounded-full bg-stitch-parchment/90 border border-stitch-sand/80 text-stitch-slate hover:border-stitch-gold hover:text-stitch-maroon transition-all"
+                href="/read/bhagavad-gita/1"
+                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-stitch-maroon/5 border border-stitch-maroon/20 text-xs font-semibold text-stitch-maroon hover:bg-stitch-maroon/10 transition-colors flex items-center justify-between"
               >
-                {item.label}
+                <span className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-stitch-maroon" />
+                  <span>Open Bhagavad Gita Reader</span>
+                </span>
+                <span className="font-mono text-[11px] text-stitch-deepGold tabular-nums">18 Ch.</span>
               </Link>
-            ))}
+            </div>
           </div>
-
-          {/* Language Fast-Pills */}
-          <div className="relative z-10 flex flex-wrap items-center justify-center gap-1.5 mt-4">
-            <span className="text-xs text-stitch-stone font-semibold mr-1">Language:</span>
-            {languages.map((l) => (
-              <button
-                key={l.code}
-                type="button"
-                onClick={() => setLanguage(l.code)}
-                className={`min-h-[36px] px-3 py-1 text-xs font-semibold rounded-full transition-all border cursor-pointer ${
-                  preferences.language === l.code
-                    ? 'bg-stitch-maroon text-stitch-ivory border-stitch-maroon shadow-sm'
-                    : 'bg-stitch-ivory/90 text-stitch-slate border-stitch-sand/80 hover:border-stitch-gold hover:text-stitch-maroon'
-                }`}
-              >
-                {l.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Hero CTAs */}
-          <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 mt-6">
-            <DownloadAppButton variant="hero" />
-
-            <Link
-              href="/feed"
-              className="min-h-[44px] px-6 py-2.5 rounded-2xl bg-stitch-maroon hover:bg-stitch-maroonHover text-stitch-ivory font-serif font-bold text-sm flex items-center gap-2 shadow-sm transition-all active:scale-95 border border-stitch-gold/40"
-            >
-              <Compass className="w-4 h-4 text-stitch-gold" />
-              <span>Explore Wisdom Feed</span>
-            </Link>
-
-            <Link
-              href="/stashes"
-              className="min-h-[44px] px-6 py-2.5 rounded-2xl bg-stitch-ivory border-2 border-stitch-gold/60 text-stitch-maroon hover:bg-stitch-parchment font-serif font-bold text-sm flex items-center gap-2 transition-all active:scale-95 shadow-sm"
-            >
-              <Bookmark className="w-4 h-4 text-stitch-deepGold" />
-              <span>Browse Stashes</span>
-            </Link>
-          </div>
-        </div>
+        </section>
 
         {/* Daily Sacred Sankalpam */}
         <DailySankalpamCard />
@@ -156,7 +161,7 @@ export default function HomePage() {
 
         {/* Download Mobile App Showcase Banner (Hidden when running inside installed app) */}
         {!isStandalone && (
-          <section className="relative rounded-3xl bg-gradient-to-r from-stitch-parchment via-stitch-ivory to-stitch-parchment border-2 border-stitch-sand/80 p-6 md:p-8 overflow-hidden shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+          <section className="relative rounded-3xl bg-gradient-to-r from-stitch-parchment via-stitch-ivory to-stitch-parchment border border-stitch-sand shadow-stitch-layered p-6 md:p-8 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <img
                 src={getAssetUrl('/images/app-icon-192.png')}
@@ -166,7 +171,7 @@ export default function HomePage() {
               <div className="text-left">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stitch-gold/15 border border-stitch-gold/30 text-stitch-deepGold text-[11px] font-bold uppercase tracking-wider mb-1">
                   <Smartphone className="w-3 h-3 text-stitch-deepGold" />
-                  <span>Downloadable App</span>
+                  <span>Offline App</span>
                 </div>
                 <h3 className="font-serif font-bold text-xl md:text-2xl text-stitch-maroon">
                   Take Dharma Anywhere, 100% Offline
@@ -211,10 +216,10 @@ export default function HomePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-[11px] text-stitch-stone">
             <span>© {new Date().getFullYear()} KUBERAN DHARMA APP.</span>
-            <Link href="/privacy" className="text-stitch-maroon hover:underline font-semibold">
+            <Link href="/privacy" className="text-stitch-maroon hover:underline font-semibold min-h-[44px] inline-flex items-center">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-stitch-maroon hover:underline font-semibold">
+            <Link href="/terms" className="text-stitch-maroon hover:underline font-semibold min-h-[44px] inline-flex items-center">
               Terms of Use
             </Link>
           </div>

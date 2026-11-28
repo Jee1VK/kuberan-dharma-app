@@ -59,7 +59,7 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
     : 'text-sm md:text-base leading-relaxed text-stitch-slate font-sans';
 
   return (
-    <article className="w-full max-w-2xl mx-auto bg-stitch-ivory rounded-3xl border border-stitch-sand/80 shadow-card hover:shadow-cardHover transition-all p-5 md:p-7 flex flex-col gap-4 relative overflow-hidden">
+    <article className="w-full max-w-2xl mx-auto bg-stitch-ivory rounded-3xl border border-stitch-sand/80 shadow-stitch-layered hover:border-stitch-gold/70 transition-all p-5 md:p-7 flex flex-col gap-4 relative overflow-hidden">
       {/* Decorative top accent border */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-stitch-maroon via-stitch-gold to-stitch-maroon" />
 
@@ -119,10 +119,10 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
       {/* Sacred Shloka Box */}
       <div className="relative bg-gradient-to-b from-stitch-parchment/80 via-stitch-ivory to-stitch-parchment/60 rounded-2xl p-4 md:p-6 border border-stitch-gold/40 shadow-inner flex flex-col gap-3">
         {/* Subtle Vedic Diya ornament */}
-        <div className="flex items-center justify-center gap-2 pt-0.5 opacity-80 select-none">
-          <span className="h-px w-8 bg-stitch-gold/40" />
+        <div className="flex items-center justify-center gap-3 pt-0.5 opacity-85 select-none">
+          <span className="w-10 zari-divider" />
           <span className="text-stitch-deepGold text-xs font-serif">ॐ</span>
-          <span className="h-px w-8 bg-stitch-gold/40" />
+          <span className="w-10 zari-divider" />
         </div>
 
         <p className="font-devanagari text-xl md:text-2xl font-bold text-stitch-maroon whitespace-pre-line leading-[2.1] text-center tracking-wide">
@@ -138,7 +138,7 @@ export const DharmaCard: React.FC<DharmaCardProps> = ({
           <button
             type="button"
             onClick={() => setShowPronunciation(!showPronunciation)}
-            className="min-h-[36px] px-2 text-[11px] font-semibold text-stitch-deepGold hover:text-stitch-maroon flex items-center gap-1 cursor-pointer"
+            className="min-h-[44px] px-3 text-xs font-semibold text-stitch-deepGold hover:text-stitch-maroon flex items-center gap-1.5 cursor-pointer rounded-xl hover:bg-stitch-parchment/80 transition-colors"
           >
             <Sparkles className="w-3 h-3 text-stitch-gold" />
             <span>{showPronunciation ? 'Hide Syllable Breakdown' : 'Show Sanskrit Syllables & Chanting Guide'}</span>
